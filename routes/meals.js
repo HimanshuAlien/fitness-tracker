@@ -4,7 +4,23 @@ const auth = require('../middleware/auth');
 
 const router = express.Router();
 
-// Get today's meals
+// Get today's meals// Get today's meals - ADD THIS ROUTE
+router.get('/today', auth, async (req, res) => {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        const meals = await Meal.find({
+            user: req.userId,
+            dateString: today
+        }).sort({ createdAt: -1 });
+        
+        console.log(`📊 Found ${meals.length} meals for user ${req.userId} on ${today}`);
+        res.json({ meals });
+    } catch (error) {
+        console.error('Get today meals error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 // Add this route for getting ALL meals (not just today)
 // Get ALL meals (FIXED with proper auth and path)
 router.get('/all', auth, async (req, res) => {
