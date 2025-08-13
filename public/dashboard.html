@@ -326,9 +326,13 @@
                             <li><a class="dropdown-item py-2 px-3" href="#" onclick="toggleTheme()">
                                     <i class="fas fa-moon me-3 text-primary"></i>🌙 Dark Mode
                                 </a></li>
-                            <li><a class="dropdown-item py-2 px-3" href="#" onclick="downloadData()">
-                                    <i class="fas fa-download me-3 text-success"></i>📊 Download Data
-                                </a></li>
+                            <!-- Add this in your dashboard header/toolbar area -->
+<div class="btn-toolbar mb-2 mb-md-0">
+    <button onclick="showDownloadModal()" class="btn btn-outline-primary">
+        <i class="fas fa-download me-2"></i>Download Data
+    </button>
+</div>
+
                             <li>
                                 <hr class="dropdown-divider my-2">
                             </li>
@@ -3012,6 +3016,66 @@ window.loadAllDashboardData = loadAllDashboardData;
 <script src="js/progress.js"></script>
 <script src="js/dashboard.js"></script>
 
+<!-- Download Data Modal - Add before </body> -->
+<div class="modal fade" id="downloadModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="modal-header border-0 text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-download me-2"></i>
+                    Download Your Fitness Data
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-white">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="download-option p-4 rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+                            <div class="text-center mb-3">
+                                <i class="fas fa-utensils fa-3x mb-2" style="color: #4ecdc4;"></i>
+                                <h6>Meals Data</h6>
+                            </div>
+                            <p class="small mb-3">Download all your meal logs with calories, dates, and nutritional information.</p>
+                            <button onclick="downloadMealsData()" class="btn btn-light w-100">
+                                <i class="fas fa-file-csv me-2"></i>Download CSV
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="download-option p-4 rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+                            <div class="text-center mb-3">
+                                <i class="fas fa-dumbbell fa-3x mb-2" style="color: #fa709a;"></i>
+                                <h6>Workouts Data</h6>
+                            </div>
+                            <p class="small mb-3">Download all your workout sessions with duration, calories burned, and exercise details.</p>
+                            <button onclick="downloadWorkoutsData()" class="btn btn-light w-100">
+                                <i class="fas fa-file-csv me-2"></i>Download CSV
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="download-option p-4 rounded text-center" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+                            <i class="fas fa-chart-line fa-3x mb-2" style="color: #ff6b6b;"></i>
+                            <h6>Complete Fitness Report</h6>
+                            <p class="small mb-3">Get a comprehensive PDF report with all your fitness data, progress charts, and insights.</p>
+                            <button onclick="downloadFullReport()" class="btn btn-warning">
+                                <i class="fas fa-file-pdf me-2"></i>Generate PDF Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <small class="text-white-50">
+                    <i class="fas fa-shield-alt me-1"></i>
+                    Your data is securely processed and downloaded directly to your device.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 
