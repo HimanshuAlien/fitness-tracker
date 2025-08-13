@@ -1561,65 +1561,169 @@
                     }
 
                     // Load preview data for download modal
-                    async function loadDownloadPreview() {
-                        try {
-                            const weeklyData = await api.getWeeklyProgress();
-
-                            document.getElementById('previewCalories').textContent = `${weeklyData.weeklyStats.totalCalories || 0} cal`;
-                            document.getElementById('previewMeals').textContent = `${weeklyData.weeklyStats.totalMeals || 0} meals`;
-                            document.getElementById('previewWorkouts').textContent = `${weeklyData.weeklyStats.totalWorkouts || 0} sessions`;
-                        } catch (error) {
-                            document.getElementById('previewCalories').textContent = 'N/A';
-                            document.getElementById('previewMeals').textContent = 'N/A';
-                            document.getElementById('previewWorkouts').textContent = 'N/A';
-                        }
-                    }
+                    // Load preview data for download modal - FIXED VERSION
+async function loadDownloadPreview() {
+    try {
+        console.log('📊 Loading download preview data...');
+        
+        // Use existing API methods
+        const [mealsResponse, workoutsResponse] = await Promise.all([
+            api.getAllMeals().catch(() => ({ meals: [] })),
+            api.getAllWorkouts().catch(() => ({ workouts: [] }))
+        ]);
+        
+        const meals = mealsResponse.meals || [];
+        const workouts = workoutsResponse.workouts || [];
+        
+        // Calculate totals
+        const totalCalories = meals.reduce((sum, meal) => sum + (meal.calories || 0), 0);
+        const totalMeals = meals.length;
+        const totalWorkouts = workouts.length;
+        
+        // Update preview display
+        document.getElementById('previewCalories').textContent = `${totalCalories} cal`;
+        document.getElementById('previewMeals').textContent = `${totalMeals} meals`;
+        document.getElementById('previewWorkouts').textContent = `${totalWorkouts} sessions`;
+        
+        console.log('✅ Preview data loaded:', { totalCalories, totalMeals, totalWorkouts });
+        
+    } catch (error) {
+        console.error('❌ Preview loading error:', error);
+        document.getElementById('previewCalories').textContent = 'N/A';
+        document.getElementById('previewMeals').textContent = 'N/A';
+        document.getElementById('previewWorkouts').textContent = 'N/A';
+    }
+}
 
                     // Show detailed download progress with animations
-                    async function showDownloadProgress(format, startDate, endDate) {
-                        const progressSteps = [
-                            { message: "🔍 Collecting your data...", duration: 1000 },
-                            { message: "📊 Analyzing progress patterns...", duration: 800 },
-                            { message: "🎨 Formatting your report...", duration: 600 },
-                            { message: `📥 Generating ${format.toUpperCase()} file...`, duration: 400 }
-                        ];
+                    // Show detailed download progress with animations - FIXED VERSION
+async function showDownloadProgress(format, startDate, endDate) {
+    const progressSteps = [
+        { message: "🔍 Collecting your data...", duration: 1000 },
+        { message: "📊 Analyzing progress patterns...", duration: 800 },
+        { message: "🎨 Formatting your report...", duration: 600 },
+        { message: `📥 Generating ${format.toUpperCase()} file...`, duration: 400 }
+    ];
 
-                        // Show progress steps
-                        for (let i = 0; i < progressSteps.length; i++) {
-                            showMessage(progressSteps[i].message, 'info', progressSteps[i].duration);
-                            await new Promise(resolve => setTimeout(resolve, progressSteps[i].duration));
-                        }
+    // Show progress steps
+    for (let i = 0; i < progressSteps.length; i++) {
+        showMessage(progressSteps[i].message, 'info', progressSteps[i].duration);
+        await new Promise(resolve => setTimeout(resolve, progressSteps[i].duration));
+    }
 
-                        try {
-                            // Actually download the file
-                            const response = await api.downloadProgress(startDate, endDate, format);
-                            const blob = await response.blob();
+    try {
+        console.log('📥 Starting file download...');
+        
+        // Get actual data using existing API methods
+        const [mealsResponse, workoutsResponse] = await Promise.all([
+            api.getAllMeals().catch(() => ({ meals: [] })),
+            api.getAllWorkouts().catch(() => ({ workouts: [] }))
+        ]);
+        
+        const meals = mealsResponse.meals || [];
+        const workouts = workoutsResponse.workouts || [];
+        
+        // Filter data by date range
+        const startDateObj = new Date(startDate);
+        const endDateObj = new Date(endDate);
+        
+        const filteredMeals = meals.filter(meal => {
+            const mealDate = new Date(meal.createdAt);
+            return mealDate >= startDateObj && mealDate <= endDateObj;
+        });
+        
+        const filteredWorkouts = workouts.filter(workout => {
+            const workoutDate = new Date(workout.createdAt);
+            return workoutDate >= startDateObj && workoutDate <= endDateObj;
+        });
+        
+        // Generate file content based on format
+        let fileContent, mimeType, fileExtension;
+        
+        if (format === 'json') {
+            // JSON format
+            const reportData = {
+                reportInfo: {
+                    generatedAt: new Date().toISOString(),
+                    dateRange: { startDate, endDate },
+                    totalMeals: filteredMeals.length,
+                    totalWorkouts: filteredWorkouts.length,
+                    totalCalories: filteredMeals.reduce((sum, m) => sum + (m.calories || 0), 0)
+                },
+                meals: filteredMeals.map(meal => ({
+                    date: new Date(meal.createdAt).toLocaleDateString(),
+                    time: new Date(meal.createdAt).toLocaleTimeString(),
+                    type: meal.type || 'Meal',
+                    description: meal.description || '',
+                    calories: meal.calories || 0
+                })),
+                workouts: filteredWorkouts.map(workout => ({
+                    date: new Date(workout.createdAt).toLocaleDateString(),
+                    time: new Date(workout.createdAt).toLocaleTimeString(),
+                    type: workout.type || 'Workout',
+                    duration: workout.duration || 0,
+                    calories: workout.calories || 0
+                }))
+            };
+            
+            fileContent = JSON.stringify(reportData, null, 2);
+            mimeType = 'application/json';
+            fileExtension = 'json';
+            
+        } else if (format === 'csv') {
+            // CSV format
+            let csvContent = 'FitTracker Data Export\n';
+            csvContent += `Generated: ${new Date().toLocaleDateString()}\n`;
+            csvContent += `Date Range: ${startDate} to ${endDate}\n\n`;
+            
+            // Meals CSV
+            csvContent += 'MEALS DATA\n';
+            csvContent += 'Date,Time,Type,Description,Calories\n';
+            filteredMeals.forEach(meal => {
+                const date = new Date(meal.createdAt).toLocaleDateString();
+                const time = new Date(meal.createdAt).toLocaleTimeString();
+                csvContent += `"${date}","${time}","${meal.type || 'Meal'}","${meal.description || ''}","${meal.calories || 0}"\n`;
+            });
+            
+            csvContent += '\nWORKOUTS DATA\n';
+            csvContent += 'Date,Time,Type,Duration (min),Calories Burned\n';
+            filteredWorkouts.forEach(workout => {
+                const date = new Date(workout.createdAt).toLocaleDateString();
+                const time = new Date(workout.createdAt).toLocaleTimeString();
+                csvContent += `"${date}","${time}","${workout.type || 'Workout'}","${workout.duration || 0}","${workout.calories || 0}"\n`;
+            });
+            
+            fileContent = csvContent;
+            mimeType = 'text/csv';
+            fileExtension = 'csv';
+        }
+        
+        // Create and download file
+        const blob = new Blob([fileContent], { type: mimeType });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `fittracker-report-${endDate}.${fileExtension}`;
+        a.style.display = 'none';
 
-                            // Create download link
-                            const url = window.URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `fittracker-report-${endDate}.${format}`;
-                            a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
 
-                            document.body.appendChild(a);
-                            a.click();
+        // Cleanup
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
 
-                            // Cleanup
-                            window.URL.revokeObjectURL(url);
-                            document.body.removeChild(a);
+        // Success notification with celebration
+        showMessage(`🎉 Your ${format.toUpperCase()} fitness report has been downloaded successfully!`, 'success');
+        
+        console.log('✅ Download completed successfully');
 
-                            // Success notification with celebration
-                            showMessage(`🎉 Your ${format.toUpperCase()} fitness report has been downloaded successfully!`);
+    } catch (error) {
+        console.error('❌ Download error:', error);
+        showMessage(`❌ Failed to download ${format.toUpperCase()} file. Please try again.`, 'error');
+    }
+}
 
-                            // Track download event
-                            trackActivity();
-
-                        } catch (error) {
-                            console.error('Download error:', error);
-                            showMessage(`❌ Failed to download ${format.toUpperCase()} file. Please try again.`, 'error');
-                        }
-                    }
 
                     // Enhanced theme toggle with smooth transition
                     function toggleTheme() {
