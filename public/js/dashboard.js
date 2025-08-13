@@ -1,3 +1,54 @@
+
+// Add this at the very beginning of your dashboard initialization
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Dashboard loading...');
+    
+    // CRITICAL: Set the token immediately when page loads
+    const token = localStorage.getItem('fittracker_token');
+    if (!token) {
+        console.log('❌ No token found, redirecting to login');
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    console.log('🔑 Token found, setting in API...');
+    api.setToken(token);
+    
+    // Small delay to ensure API is ready, then load data
+    setTimeout(() => {
+        loadDashboardData();
+    }, 500);
+});
+
+async function loadDashboardData() {
+    try {
+        console.log('📊 Loading dashboard data...');
+        
+        // Load today's data
+        const [mealsResponse, workoutsResponse] = await Promise.all([
+            api.getTodayMeals().catch(err => {
+                console.error('❌ Meals error:', err);
+                return { meals: [] };
+            }),
+            api.getTodayWorkouts().catch(err => {
+                console.error('❌ Workouts error:', err);
+                return { workouts: [] };
+            })
+        ]);
+        
+        console.log('✅ Dashboard data loaded:', {
+            meals: mealsResponse.meals?.length || 0,
+            workouts: workoutsResponse.workouts?.length || 0
+        });
+        
+        // Update your dashboard display
+        displayMeals(mealsResponse.meals || []);
+        displayWorkouts(workoutsResponse.workouts || []);
+        
+    } catch (error) {
+        console.error('❌ Failed to load dashboard data:', error);
+    }
+}
 // Dashboard Management with MongoDB Integration
 class DashboardManager {
     constructor() {
