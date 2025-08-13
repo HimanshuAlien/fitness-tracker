@@ -6,23 +6,31 @@ class ProgressAnalytics {
     }
 
     async initializeProgressPage() {
-        try {
-            console.log('📊 Initializing progress analytics...');
-            
-            // Check authentication
-            const token = localStorage.getItem('fittracker_token');
-            if (!token) {
-                window.location.href = 'login.html';
-                return;
-            }
-
-            this.api.setToken(token);
-            await this.loadProgressData();
-            
-        } catch (error) {
-            console.error('❌ Failed to initialize progress page:', error);
+    try {
+        console.log('📊 Initializing progress analytics...');
+        
+        // CRITICAL: Set token before making API calls
+        const token = localStorage.getItem('fittracker_token');
+        if (!token) {
+            console.log('❌ No token, redirecting...');
+            window.location.href = 'login.html';
+            return;
         }
+        
+        // Set token in API instance
+        this.api.setToken(token);
+        console.log('🔑 Token set for progress analytics');
+        
+        // Small delay to ensure token is set
+        setTimeout(() => {
+            this.loadProgressData();
+        }, 300);
+        
+    } catch (error) {
+        console.error('❌ Failed to initialize progress page:', error);
     }
+}
+
 
     async loadProgressData() {
         try {
