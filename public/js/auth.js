@@ -86,46 +86,66 @@ class AuthManager {
     }
 
     async handleRegister(event) {
-        event.preventDefault();
+    event.preventDefault();
+    
+    console.log('📝 Registration form submitted');
+    
+    // Get form data with proper IDs
+    const name = document.getElementById('name')?.value?.trim();
+    const email = document.getElementById('email')?.value?.trim();
+    const password = document.getElementById('password')?.value?.trim();
+    const confirmPassword = document.getElementById('confirmPassword')?.value?.trim();
 
-        const name = document.getElementById('name')?.value;
-        const email = document.getElementById('email')?.value;
-        const password = document.getElementById('password')?.value;
-        const confirmPassword = document.getElementById('confirmPassword')?.value;
+    console.log('📊 Form data extracted:', { 
+        name: name || 'MISSING', 
+        email: email || 'MISSING', 
+        password: password ? 'Present' : 'MISSING',
+        confirmPassword: confirmPassword ? 'Present' : 'MISSING'
+    });
 
-        // Validation
-        if (!name || !email || !password || !confirmPassword) {
-            this.showMessage('Please fill in all fields.', 'error');
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            this.showMessage('Passwords do not match.', 'error');
-            return;
-        }
-
-        if (password.length < 6) {
-            this.showMessage('Password must be at least 6 characters long.', 'error');
-            return;
-        }
-
-        try {
-            this.showLoading(true);
-
-            await api.register({ name, email, password });
-
-            this.showMessage('✅ Registration successful! Please login.', 'success');
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 2000);
-
-        } catch (error) {
-            console.error('❌ Registration error:', error);
-            this.showMessage(error.message || 'Registration failed', 'error');
-        } finally {
-            this.showLoading(false);
-        }
+    // Enhanced validation
+    if (!name || name.length < 2) {
+        this.showMessage('Please enter a valid name (at least 2 characters).', 'error');
+        return;
     }
+
+    if (!email || !email.includes('@')) {
+        this.showMessage('Please enter a valid email address.', 'error');
+        return;
+    }
+
+    if (!password || password.length < 6) {
+        this.showMessage('Password must be at least 6 characters long.', 'error');
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        this.showMessage('Passwords do not match.', 'error');
+        return;
+    }
+
+    try {
+        this.showLoading(true);
+        
+        const response = await api.register({ 
+            name: name,
+            email: email, 
+            password: password 
+        });
+        
+        this.showMessage('✅ Registration successful! Please login.', 'success');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 2000);
+        
+    } catch (error) {
+        console.error('❌ Registration error:', error);
+        this.showMessage(error.message || 'Registration failed', 'error');
+    } finally {
+        this.showLoading(false);
+    }
+}
+
 
     // Google OAuth token handler (only for dashboard page)
     handleGoogleOAuthCallback() {
