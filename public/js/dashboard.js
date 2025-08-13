@@ -569,6 +569,94 @@ document.addEventListener('DOMContentLoaded', function () {
     setTimeout(loadTodayData, 1000);
     setupFormListeners();
 });
+function displayMeals(meals) {
+    const mealsContainer = document.querySelector('#today-meals, .meals-list, [data-meals-container]');
+    if (!mealsContainer) return;
+    
+    if (meals.length === 0) {
+        mealsContainer.innerHTML = '<p class="text-muted">No meals logged today. Add your first meal!</p>';
+        return;
+    }
+    
+    mealsContainer.innerHTML = meals.map(meal => `
+        <div class="meal-item d-flex justify-content-between align-items-center p-3 mb-2 border rounded">
+            <div>
+                <h6 class="mb-1">${meal.type || 'Meal'}</h6>
+                <small class="text-muted">${meal.description || 'No description'}</small>
+                <div class="mt-1">
+                    <span class="badge bg-primary">${meal.calories || 0} cal</span>
+                </div>
+            </div>
+            <button class="btn btn-danger btn-sm delete-meal-btn" data-meal-id="${meal._id}">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `).join('');
+    
+    // Reattach delete listeners
+    attachMealDeleteListeners();
+}
+
+function displayWorkouts(workouts) {
+    const workoutsContainer = document.querySelector('#today-workouts, .workouts-list, [data-workouts-container]');
+    if (!workoutsContainer) return;
+    
+    if (workouts.length === 0) {
+        workoutsContainer.innerHTML = '<p class="text-muted">No workouts logged today. Start your first workout!</p>';
+        return;
+    }
+    
+    workoutsContainer.innerHTML = workouts.map(workout => `
+        <div class="workout-item d-flex justify-content-between align-items-center p-3 mb-2 border rounded">
+            <div>
+                <h6 class="mb-1">${workout.type || 'Workout'}</h6>
+                <small class="text-muted">${workout.duration || 0} minutes</small>
+                <div class="mt-1">
+                    <span class="badge bg-success">${workout.calories || 0} cal burned</span>
+                </div>
+            </div>
+            <button class="btn btn-danger btn-sm delete-workout-btn" data-workout-id="${workout._id}">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `).join('');
+    
+    // Reattach delete listeners
+    attachWorkoutDeleteListeners();
+}
+
+function attachMealDeleteListeners() {
+    document.querySelectorAll('.delete-meal-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const mealId = this.getAttribute('data-meal-id');
+            if (confirm('Delete this meal?')) {
+                try {
+                    await api.deleteMeal(mealId);
+                    await loadDashboardData(); // Refresh data
+                } catch (error) {
+                    console.error('❌ Delete meal error:', error);
+                }
+            }
+        });
+    });
+}
+
+function attachWorkoutDeleteListeners() {
+    document.querySelectorAll('.delete-workout-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const workoutId = this.getAttribute('data-workout-id');
+            if (confirm('Delete this workout?')) {
+                try {
+                    await api.deleteWorkout(workoutId);
+                    await loadDashboardData(); // Refresh data
+                } catch (error) {
+                    console.error('❌ Delete workout error:', error);
+                }
+            }
+        });
+    });
+}
+
 
 // Initialize dashboard when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
