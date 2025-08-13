@@ -1,10 +1,14 @@
 // Enhanced API Manager with proper JWT handling
 class ApiManager {
     constructor() {
-        this.baseURL = 'http://localhost:3000/api';
+        this.baseURL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000/api'
+            : '/api'; // ← Change to relative URL since same domain
+        
         this.token = localStorage.getItem('fittracker_token');
-        console.log('🚀 API Manager initialized with token:', this.token ? 'Present' : 'Missing');
+        console.log('🚀 API Manager initialized with baseURL:', this.baseURL);
     }
+
 
     setToken(token) {
         console.log('🔑 Setting new token:', token ? 'Valid' : 'Invalid');
