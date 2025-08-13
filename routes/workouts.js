@@ -21,9 +21,10 @@ router.get('/today', auth, async (req, res) => {
     }
 });
 // Add this route for getting ALL workouts (not just today)
-router.get('/', async (req, res) => {
+// Get ALL workouts (FIXED with proper auth and path)
+router.get('/all', auth, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.userId; // Use req.userId (not req.user.id)
         console.log('📊 Fetching all workouts for user:', userId);
 
         const workouts = await Workout.find({ user: userId })
@@ -45,6 +46,7 @@ router.get('/', async (req, res) => {
         });
     }
 });
+
 
 // Add workout
 router.post('/', auth, async (req, res) => {
