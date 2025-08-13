@@ -18,30 +18,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-<style>
-/* Ultra-targeted fix for your sidebar after daily goals */
-@media (max-width: 768px) {
-    /* Your exact sidebar classes */
-    nav.col-md-3.col-lg-2.d-md-block.sidebar.px-0 {
-        height: auto !important;
-        min-height: unset !important;
-        max-height: 80vh !important;
-        overflow-y: auto !important;
-    }
-    
-    /* Remove padding that creates white space */
-    nav.sidebar.px-0 > * {
-        padding-bottom: 0 !important;
-        margin-bottom: 15px !important;
-    }
-    
-    /* Ensure the last item (daily goals) doesn't have extra margin */
-    nav.sidebar.px-0 > *:last-child {
-        margin-bottom: 0 !important;
-        padding-bottom: 10px !important;
-    }
-}
-</style>
+
 
         /* Enhanced Custom Styling with Beautiful Colors */
         :root {
@@ -82,7 +59,28 @@
             box-shadow: 4px 0 20px rgba(0, 0, 0, 0.05);
             min-height: calc(100vh - 76px);
         }
-
+/* Ultra-targeted fix for your sidebar after daily goals */
+@media (max-width: 768px) {
+    /* Your exact sidebar classes */
+    nav.col-md-3.col-lg-2.d-md-block.sidebar.px-0 {
+        height: auto !important;
+        min-height: unset !important;
+        max-height: 80vh !important;
+        overflow-y: auto !important;
+    }
+    
+    /* Remove padding that creates white space */
+    nav.sidebar.px-0 > * {
+        padding-bottom: 0 !important;
+        margin-bottom: 15px !important;
+    }
+    
+    /* Ensure the last item (daily goals) doesn't have extra margin */
+    nav.sidebar.px-0 > *:last-child {
+        margin-bottom: 0 !important;
+        padding-bottom: 10px !important;
+    }
+}
         .sidebar .nav-link {
             border-radius: 12px !important;
             margin: 4px 12px !important;
