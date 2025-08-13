@@ -1041,6 +1041,7 @@
                         }
                     }
 // Progress Analytics JavaScript
+// Progress Analytics JavaScript - Updated for your HTML structure
 class ProgressAnalytics {
     constructor() {
         this.api = api; // Use your existing API instance
@@ -1086,12 +1087,10 @@ class ProgressAnalytics {
                 user: user.name || 'Unknown'
             });
 
-            // Update all analytics sections
-            this.updateDaysActive(meals, workouts);
-            this.updateTotalCalories(meals);
-            this.updateWeeklyMeals(meals);
-            this.updateGoalsStatus(meals, workouts, user);
-            this.updateWeeklyProgress(meals, workouts);
+            // Update all analytics sections with your exact element IDs
+            this.updateWeeklyStats(meals, workouts);
+            this.updateGoalsStatus(meals, workouts);
+            this.updateWeeklyProgressChart(meals, workouts);
 
         } catch (error) {
             console.error('❌ Error loading progress data:', error);
@@ -1099,113 +1098,115 @@ class ProgressAnalytics {
         }
     }
 
-    updateDaysActive(meals, workouts) {
+    updateWeeklyStats(meals, workouts) {
         try {
-            // Get unique days when user was active
+            // Get data from last 7 days
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+
+            // Filter data for this week
+            const weeklyMeals = meals.filter(meal => new Date(meal.createdAt) >= weekAgo);
+            const weeklyWorkouts = workouts.filter(workout => new Date(workout.createdAt) >= weekAgo);
+
+            // Calculate active days (unique days with meals or workouts)
             const activeDays = new Set();
-            
-            meals.forEach(meal => {
+            weeklyMeals.forEach(meal => {
                 const date = new Date(meal.createdAt).toDateString();
                 activeDays.add(date);
             });
-            
-            workouts.forEach(workout => {
+            weeklyWorkouts.forEach(workout => {
                 const date = new Date(workout.createdAt).toDateString();
                 activeDays.add(date);
             });
 
-            const daysCount = activeDays.size;
-            
-            // Update DOM elements
-            const daysActiveElements = document.querySelectorAll('[data-stat="days-active"], .days-active, #daysActive');
-            daysActiveElements.forEach(el => {
-                el.textContent = daysCount;
+            // Calculate weekly calories from meals
+            const weeklyCalories = weeklyMeals.reduce((sum, meal) => sum + (meal.calories || 0), 0);
+
+            // Update your exact HTML elements
+            document.getElementById('activeDays').textContent = activeDays.size;
+            document.getElementById('weeklyCalories').textContent = weeklyCalories.toLocaleString();
+            document.getElementById('weeklyMeals').textContent = weeklyMeals.length;
+            document.getElementById('weeklyWorkouts').textContent = weeklyWorkouts.length;
+
+            console.log('📊 Weekly stats updated:', {
+                activeDays: activeDays.size,
+                weeklyCalories,
+                weeklyMeals: weeklyMeals.length,
+                weeklyWorkouts: weeklyWorkouts.length
             });
 
-            console.log('📅 Days active updated:', daysCount);
         } catch (error) {
-            console.error('❌ Error updating days active:', error);
+            console.error('❌ Error updating weekly stats:', error);
         }
     }
 
-    updateTotalCalories(meals) {
+    updateGoalsStatus(meals, workouts) {
         try {
-            const totalCalories = meals.reduce((sum, meal) => {
-                return sum + (meal.calories || 0);
-            }, 0);
+            // Get today's data
+            const today = new Date().toDateString();
+            const todayMeals = meals.filter(meal => 
+                new Date(meal.createdAt).toDateString() === today
+            );
+            const todayWorkouts = workouts.filter(workout => 
+                new Date(workout.createdAt).toDateString() === today
+            );
+            const todayCalories = todayMeals.reduce((sum, meal) => sum + (meal.calories || 0), 0);
 
-            // Update DOM elements
-            const caloriesElements = document.querySelectorAll('[data-stat="total-calories"], .total-calories, #totalCalories');
-            caloriesElements.forEach(el => {
-                el.textContent = totalCalories.toLocaleString();
-            });
-
-            console.log('🔥 Total calories updated:', totalCalories);
-        } catch (error) {
-            console.error('❌ Error updating total calories:', error);
-        }
-    }
-
-    updateWeeklyMeals(meals) {
-        try {
-            // Get meals from last 7 days
-            const weekAgo = new Date();
-            weekAgo.setDate(weekAgo.getDate() - 7);
-
-            const weeklyMeals = meals.filter(meal => {
-                const mealDate = new Date(meal.createdAt);
-                return mealDate >= weekAgo;
-            });
-
-            // Update DOM elements
-            const weeklyMealsElements = document.querySelectorAll('[data-stat="weekly-meals"], .weekly-meals, #weeklyMeals');
-            weeklyMealsElements.forEach(el => {
-                el.textContent = weeklyMeals.length;
-            });
-
-            console.log('🍽️ Weekly meals updated:', weeklyMeals.length);
-        } catch (error) {
-            console.error('❌ Error updating weekly meals:', error);
-        }
-    }
-
-    updateGoalsStatus(meals, workouts, user) {
-        try {
-            const weekAgo = new Date();
-            weekAgo.setDate(weekAgo.getDate() - 7);
-
-            // Weekly stats
-            const weeklyMeals = meals.filter(meal => new Date(meal.createdAt) >= weekAgo).length;
-            const weeklyWorkouts = workouts.filter(workout => new Date(workout.createdAt) >= weekAgo).length;
-            const weeklyCalories = meals
-                .filter(meal => new Date(meal.createdAt) >= weekAgo)
-                .reduce((sum, meal) => sum + (meal.calories || 0), 0);
-
-            // Goals (use defaults if user goals not set)
-            const mealGoal = user.goals?.dailyMeals * 7 || 21; // 3 meals/day × 7 days
-            const workoutGoal = user.goals?.weeklyWorkouts || 5;
-            const caloriesGoal = user.goals?.dailyCalories * 7 || 3500; // 500/day × 7 days
+            // Daily goals (as shown in your HTML)
+            const dailyCaloriesGoal = 500;
+            const dailyMealsGoal = 3;
+            const dailyWorkoutsGoal = 1;
 
             // Calculate progress percentages
-            const mealProgress = Math.min((weeklyMeals / mealGoal) * 100, 100);
-            const workoutProgress = Math.min((weeklyWorkouts / workoutGoal) * 100, 100);
-            const caloriesProgress = Math.min((weeklyCalories / caloriesGoal) * 100, 100);
+            const caloriesProgress = Math.min((todayCalories / dailyCaloriesGoal) * 100, 100);
+            const mealsProgress = Math.min((todayMeals.length / dailyMealsGoal) * 100, 100);
+            const workoutsProgress = Math.min((todayWorkouts.length / dailyWorkoutsGoal) * 100, 100);
 
-            // Update progress bars and texts
-            this.updateProgressBar('meals-progress', mealProgress, `${weeklyMeals}/${mealGoal} meals`);
-            this.updateProgressBar('workouts-progress', workoutProgress, `${weeklyWorkouts}/${workoutGoal} workouts`);
-            this.updateProgressBar('calories-progress', caloriesProgress, `${weeklyCalories}/${caloriesGoal} calories`);
+            // Calculate overall progress
+            const overallProgress = Math.round((caloriesProgress + mealsProgress + workoutsProgress) / 3);
 
-            console.log('🎯 Goals status updated:', { mealProgress, workoutProgress, caloriesProgress });
+            // Update progress bars and percentages
+            this.updateProgressBar('caloriesGoalBar', 'caloriesGoalPercent', caloriesProgress);
+            this.updateProgressBar('mealsGoalBar', 'mealsGoalPercent', mealsProgress);
+            this.updateProgressBar('workoutsGoalBar', 'workoutsGoalPercent', workoutsProgress);
+
+            // Update overall progress
+            document.getElementById('overallGoalPercent').textContent = `${overallProgress}%`;
+
+            console.log('🎯 Goals status updated:', {
+                calories: `${todayCalories}/${dailyCaloriesGoal}`,
+                meals: `${todayMeals.length}/${dailyMealsGoal}`,
+                workouts: `${todayWorkouts.length}/${dailyWorkoutsGoal}`,
+                overall: `${overallProgress}%`
+            });
+
         } catch (error) {
             console.error('❌ Error updating goals status:', error);
         }
     }
 
-    updateWeeklyProgress(meals, workouts) {
+    updateProgressBar(barId, percentId, percentage) {
+        try {
+            const progressBar = document.getElementById(barId);
+            const percentText = document.getElementById(percentId);
+
+            if (progressBar) {
+                progressBar.style.width = `${percentage}%`;
+                progressBar.setAttribute('aria-valuenow', percentage);
+            }
+
+            if (percentText) {
+                percentText.textContent = `${Math.round(percentage)}%`;
+            }
+        } catch (error) {
+            console.error('❌ Error updating progress bar:', error);
+        }
+    }
+
+    updateWeeklyProgressChart(meals, workouts) {
         try {
             // Get data for last 7 days
-            const weekData = [];
+            const chartData = [];
             for (let i = 6; i >= 0; i--) {
                 const date = new Date();
                 date.setDate(date.getDate() - i);
@@ -1219,70 +1220,78 @@ class ProgressAnalytics {
                     new Date(workout.createdAt).toDateString() === dateStr
                 ).length;
 
-                weekData.push({
+                const dayCalories = meals
+                    .filter(meal => new Date(meal.createdAt).toDateString() === dateStr)
+                    .reduce((sum, meal) => sum + (meal.calories || 0), 0);
+
+                chartData.push({
                     day: date.toLocaleDateString('en', { weekday: 'short' }),
                     meals: dayMeals,
-                    workouts: dayWorkouts
+                    workouts: dayWorkouts,
+                    calories: dayCalories,
+                    fullDate: date.toLocaleDateString()
                 });
             }
 
-            // Update weekly overview display
-            this.updateWeeklyOverview(weekData);
-
-            console.log('📈 Weekly progress updated:', weekData);
-        } catch (error) {
-            console.error('❌ Error updating weekly progress:', error);
-        }
-    }
-
-    updateProgressBar(id, percentage, text) {
-        try {
-            const progressBar = document.getElementById(id) || document.querySelector(`[data-progress="${id}"]`);
-            const progressText = document.querySelector(`[data-text="${id}"]`);
-
-            if (progressBar) {
-                progressBar.style.width = `${percentage}%`;
-                progressBar.setAttribute('aria-valuenow', percentage);
-            }
-
-            if (progressText) {
-                progressText.textContent = text;
-            }
-        } catch (error) {
-            console.error('❌ Error updating progress bar:', error);
-        }
-    }
-
-    updateWeeklyOverview(weekData) {
-        try {
-            const overviewContainer = document.getElementById('weeklyOverview') || document.querySelector('.weekly-overview');
-            
-            if (overviewContainer) {
-                overviewContainer.innerHTML = weekData.map(day => `
-                    <div class="day-summary">
-                        <div class="day-name">${day.day}</div>
-                        <div class="day-stats">
-                            <span class="meals">🍽️ ${day.meals}</span>
-                            <span class="workouts">💪 ${day.workouts}</span>
+            // Update the weekly progress chart area
+            const chartContainer = document.getElementById('weeklyProgressChart');
+            if (chartContainer && chartData.some(day => day.meals > 0 || day.workouts > 0)) {
+                chartContainer.innerHTML = `
+                    <div class="weekly-chart-container">
+                        <div class="row text-center mb-3">
+                            <div class="col">
+                                <small class="text-muted fw-semibold">Daily Activity Overview</small>
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            ${chartData.map(day => `
+                                <div class="col">
+                                    <div class="day-card p-2 text-center" style="background: rgba(102, 126, 234, 0.1); border-radius: 8px;">
+                                        <div class="fw-semibold mb-1" style="font-size: 0.8rem;">${day.day}</div>
+                                        <div class="mb-1">
+                                            <span class="badge bg-success rounded-pill" style="font-size: 0.7rem;">
+                                                🍽️ ${day.meals}
+                                            </span>
+                                        </div>
+                                        <div class="mb-1">
+                                            <span class="badge bg-primary rounded-pill" style="font-size: 0.7rem;">
+                                                💪 ${day.workouts}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span class="badge bg-danger rounded-pill" style="font-size: 0.7rem;">
+                                                🔥 ${day.calories}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
-                `).join('');
+                `;
             }
+
+            console.log('📈 Weekly progress chart updated:', chartData);
+
         } catch (error) {
-            console.error('❌ Error updating weekly overview:', error);
+            console.error('❌ Error updating weekly progress chart:', error);
         }
     }
 
     showError(message) {
         console.error('📊 Progress Analytics Error:', message);
-        // Show error in UI if needed
-        const errorContainer = document.querySelector('.progress-error');
-        if (errorContainer) {
-            errorContainer.textContent = message;
-            errorContainer.style.display = 'block';
-        }
+        // Optionally show error in UI
     }
 }
+
+// Initialize progress analytics when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Only initialize if we're on the progress section
+    if (document.getElementById('progress-section')) {
+        console.log('🚀 Progress section found, initializing analytics...');
+        new ProgressAnalytics();
+    }
+});
 
 // Initialize progress analytics when page loads
 document.addEventListener('DOMContentLoaded', function() {
