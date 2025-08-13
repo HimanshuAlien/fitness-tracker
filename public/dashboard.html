@@ -18,8 +18,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-
-
         /* Enhanced Custom Styling with Beautiful Colors */
         :root {
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -59,28 +57,7 @@
             box-shadow: 4px 0 20px rgba(0, 0, 0, 0.05);
             min-height: calc(100vh - 76px);
         }
-/* Ultra-targeted fix for your sidebar after daily goals */
-@media (max-width: 768px) {
-    /* Your exact sidebar classes */
-    nav.col-md-3.col-lg-2.d-md-block.sidebar.px-0 {
-        height: auto !important;
-        min-height: unset !important;
-        max-height: 80vh !important;
-        overflow-y: auto !important;
-    }
-    
-    /* Remove padding that creates white space */
-    nav.sidebar.px-0 > * {
-        padding-bottom: 0 !important;
-        margin-bottom: 15px !important;
-    }
-    
-    /* Ensure the last item (daily goals) doesn't have extra margin */
-    nav.sidebar.px-0 > *:last-child {
-        margin-bottom: 0 !important;
-        padding-bottom: 10px !important;
-    }
-}
+
         .sidebar .nav-link {
             border-radius: 12px !important;
             margin: 4px 12px !important;
@@ -319,6 +296,30 @@
                 font-size: 2rem !important;
             }
         }
+
+        /* Ultra-targeted fix for your sidebar after daily goals */
+        @media (max-width: 768px) {
+
+            /* Your exact sidebar classes */
+            nav.col-md-3.col-lg-2.d-md-block.sidebar.px-0 {
+                height: auto !important;
+                min-height: unset !important;
+                max-height: 80vh !important;
+                overflow-y: auto !important;
+            }
+
+            /* Remove padding that creates white space */
+            nav.sidebar.px-0>* {
+                padding-bottom: 0 !important;
+                margin-bottom: 15px !important;
+            }
+
+            /* Ensure the last item (daily goals) doesn't have extra margin */
+            nav.sidebar.px-0>*:last-child {
+                margin-bottom: 0 !important;
+                padding-bottom: 10px !important;
+            }
+        }
     </style>
 </head>
 
@@ -397,11 +398,12 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center" href="javascript:void(0)"
-                                onclick="switchSection('progress')">
+                                onclick="switchSection('progress'); loadProgressData(); return false;">
                                 <i class="fas fa-chart-line me-3"></i>
                                 <span>📈 Progress</span>
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center" href="javascript:void(0)"
                                 onclick="switchSection('friends')">
@@ -622,7 +624,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-lg-6">
                             <div class="card h-100">
                                 <div class="card-header d-flex align-items-center">
@@ -710,129 +711,115 @@
                 </div>
 
 
-                <!-- Progress Section -->
-                <!-- Enhanced Progress Section -->
-                <div id="progress-section" class="content-section">
-                    <div
-                        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4">
-                        <h1 class="h2 fw-bold">📈 Progress Analytics</h1>
-                        <div class="btn-toolbar mb-2 mb-md-0">
-                            <span class="badge bg-info rounded-pill px-3 py-2">
-                                <i class="fas fa-chart-line me-1"></i>Weekly View
-                            </span>
-                        </div>
-                    </div>
+                <!-- Add this RIGHT AFTER your existing sections (dashboard, meals, workouts) -->
+                <div id="progress-section" class="content-section" style="display: none;">
+                    <div class="container-fluid">
+                        <h2><i class="fas fa-chart-line me-2 text-primary"></i>Progress Analytics</h2>
 
-                    <!-- Progress Summary Cards -->
-                    <div class="row g-4 mb-4">
-                        <div class="col-md-3">
-                            <div class="card stat-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <div class="stat-icon">📅</div>
-                                    <h6 class="fw-bold text-muted mb-2">Days Active</h6>
-                                    <h3 id="activeDays" class="fw-bold" style="color: #667eea;">0</h3>
-                                    <small class="text-muted">This Week</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="card stat-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <div class="stat-icon">🔥</div>
-                                    <h6 class="fw-bold text-muted mb-2">Weekly Calories</h6>
-                                    <h3 id="weeklyCalories" class="fw-bold" style="color: #ff6b6b;">0</h3>
-                                    <small class="text-muted">Total Burned</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="card stat-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <div class="stat-icon">🥗</div>
-                                    <h6 class="fw-bold text-muted mb-2">Weekly Meals</h6>
-                                    <h3 id="weeklyMeals" class="fw-bold" style="color: #4ecdc4;">0</h3>
-                                    <small class="text-muted">Total Logged</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="card stat-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <div class="stat-icon">💪</div>
-                                    <h6 class="fw-bold text-muted mb-2">Weekly Workouts</h6>
-                                    <h3 id="weeklyWorkouts" class="fw-bold" style="color: #fa709a;">0</h3>
-                                    <small class="text-muted">Sessions</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Weekly Progress Chart -->
-                    <div class="row g-4">
-                        <div class="col-md-8">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0 fw-bold">📊 Weekly Progress Overview</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div id="weeklyProgressChart">
-                                        <div class="text-center py-4">
-                                            <div class="mb-3" style="font-size: 3rem; opacity: 0.3;">📈</div>
-                                            <p class="text-muted">Your weekly progress will appear here as you add more
-                                                data!</p>
+                        <!-- Weekly Stats Cards -->
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <div class="text-primary mb-2">
+                                            <i class="fas fa-calendar-check fa-2x"></i>
                                         </div>
+                                        <h3 class="fw-bold mb-1" id="active-days">0</h3>
+                                        <p class="text-muted mb-0">Active Days</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <div class="text-success mb-2">
+                                            <i class="fas fa-fire fa-2x"></i>
+                                        </div>
+                                        <h3 class="fw-bold mb-1" id="weekly-calories">0</h3>
+                                        <p class="text-muted mb-0">Weekly Calories</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <div class="text-warning mb-2">
+                                            <i class="fas fa-utensils fa-2x"></i>
+                                        </div>
+                                        <h3 class="fw-bold mb-1" id="weekly-meals">0</h3>
+                                        <p class="text-muted mb-0">Weekly Meals</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <div class="text-info mb-2">
+                                            <i class="fas fa-dumbbell fa-2x"></i>
+                                        </div>
+                                        <h3 class="fw-bold mb-1" id="weekly-workouts">0</h3>
+                                        <p class="text-muted mb-0">Weekly Workouts</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0 fw-bold">🎯 Goals Status</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <small class="fw-semibold">Daily Calories (500)</small>
-                                            <small id="caloriesGoalPercent">0%</small>
-                                        </div>
-                                        <div class="progress" style="height: 8px;">
-                                            <div class="progress-bar bg-danger" id="caloriesGoalBar" style="width: 0%">
+                        <!-- Goal Status Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-white border-0">
+                                        <h5 class="mb-0"><i class="fas fa-target me-2 text-primary"></i>Weekly Goals
+                                            Status</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label fw-bold">Calories Goal</label>
+                                                <div class="progress mb-2" style="height: 10px;">
+                                                    <div class="progress-bar bg-success" id="calories-progress"
+                                                        role="progressbar" style="width: 0%"></div>
+                                                </div>
+                                                <small class="text-muted" id="calories-status">0/500 calories</small>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label fw-bold">Meals Goal</label>
+                                                <div class="progress mb-2" style="height: 10px;">
+                                                    <div class="progress-bar bg-warning" id="meals-progress"
+                                                        role="progressbar" style="width: 0%"></div>
+                                                </div>
+                                                <small class="text-muted" id="meals-status">0/3 meals</small>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label fw-bold">Workouts Goal</label>
+                                                <div class="progress mb-2" style="height: 10px;">
+                                                    <div class="progress-bar bg-info" id="workouts-progress"
+                                                        role="progressbar" style="width: 0%"></div>
+                                                </div>
+                                                <small class="text-muted" id="workouts-status">0/1 workouts</small>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <small class="fw-semibold">Daily Meals (3)</small>
-                                            <small id="mealsGoalPercent">0%</small>
-                                        </div>
-                                        <div class="progress" style="height: 8px;">
-                                            <div class="progress-bar bg-success" id="mealsGoalBar" style="width: 0%">
-                                            </div>
+                                        <div class="text-center mt-3">
+                                            <span class="badge bg-primary fs-6 px-3 py-2" id="overall-progress">
+                                                <i class="fas fa-trophy me-1"></i>Overall: 0%
+                                            </span>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
 
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <small class="fw-semibold">Daily Workouts (1)</small>
-                                            <small id="workoutsGoalPercent">0%</small>
-                                        </div>
-                                        <div class="progress" style="height: 8px;">
-                                            <div class="progress-bar bg-primary" id="workoutsGoalBar" style="width: 0%">
-                                            </div>
-                                        </div>
+                        <!-- Weekly Progress Chart -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-white border-0">
+                                        <h5 class="mb-0"><i class="fas fa-chart-area me-2 text-primary"></i>Weekly
+                                            Progress Overview</h5>
                                     </div>
-
-                                    <div class="mt-4 p-3 rounded"
-                                        style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);">
-                                        <div class="text-center">
-                                            <h4 id="overallGoalPercent" class="fw-bold mb-1">0%</h4>
-                                            <small class="text-muted">Overall Progress Today</small>
+                                    <div class="card-body">
+                                        <div id="weekly-chart-container" style="height: 300px;">
+                                            <canvas id="weeklyChart" width="400" height="200"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -949,6 +936,7 @@
                     </div>
                 </div>
 
+
                 <!-- Working JavaScript -->
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
                 <!-- Replace the existing script tags with these -->
@@ -1051,23 +1039,17 @@
                         }
 
                         // Meal select dropdown
-                        // New code
-// Updated code for searchable inputs
-const mealSearch = document.getElementById('mealSearch');
-const exerciseSearch = document.getElementById('exerciseSearch');
+                        const mealSelect = document.getElementById('mealSelect');
+                        if (mealSelect) {
+                            mealSelect.addEventListener('change', updateMealInfo);
+                        }
 
-// Updated event listeners
-mealSearch.addEventListener('input', function() {
-    // Your existing meal handling code
-    // this.value will give you the selected meal
-});
-
-exerciseSearch.addEventListener('input', function() {
-    // Your existing exercise handling code
-    // this.value will give you the selected exercise
-});
-
-
+                        // Exercise select dropdown
+                        const exerciseSelect = document.getElementById('exerciseSelect');
+                        if (exerciseSelect) {
+                            exerciseSelect.addEventListener('change', updateWorkoutInfo);
+                        }
+                    }
                     // Add this function to your JavaScript section in dashboard.html
                     function updateCaloriesProgress(current, goal = 500) {
                         const percentage = Math.min(100, Math.round((current / goal) * 100));
@@ -1214,6 +1196,7 @@ exerciseSearch.addEventListener('input', function() {
                             localStorage.setItem(`calories_goal_${today}`, 'true');
                         }
                     }
+
 
 
                     // Add this debug function to check token status
@@ -1608,199 +1591,199 @@ exerciseSearch.addEventListener('input', function() {
 
                     // Load preview data for download modal
                     // Load preview data for download modal - FIXED VERSION
-async function loadDownloadPreview() {
-    try {
-        console.log('📊 Loading download preview data...');
-        
-        // Use existing API methods
-        const [mealsResponse, workoutsResponse] = await Promise.all([
-            api.getAllMeals().catch(() => ({ meals: [] })),
-            api.getAllWorkouts().catch(() => ({ workouts: [] }))
-        ]);
-        
-        const meals = mealsResponse.meals || [];
-        const workouts = workoutsResponse.workouts || [];
-        
-        // Calculate totals
-        const totalCalories = meals.reduce((sum, meal) => sum + (meal.calories || 0), 0);
-        const totalMeals = meals.length;
-        const totalWorkouts = workouts.length;
-        
-        // Update preview display
-        document.getElementById('previewCalories').textContent = `${totalCalories} cal`;
-        document.getElementById('previewMeals').textContent = `${totalMeals} meals`;
-        document.getElementById('previewWorkouts').textContent = `${totalWorkouts} sessions`;
-        
-        console.log('✅ Preview data loaded:', { totalCalories, totalMeals, totalWorkouts });
-        
-    } catch (error) {
-        console.error('❌ Preview loading error:', error);
-        document.getElementById('previewCalories').textContent = 'N/A';
-        document.getElementById('previewMeals').textContent = 'N/A';
-        document.getElementById('previewWorkouts').textContent = 'N/A';
-    }
-}
+                    async function loadDownloadPreview() {
+                        try {
+                            console.log('📊 Loading download preview data...');
+
+                            // Use existing API methods
+                            const [mealsResponse, workoutsResponse] = await Promise.all([
+                                api.getAllMeals().catch(() => ({ meals: [] })),
+                                api.getAllWorkouts().catch(() => ({ workouts: [] }))
+                            ]);
+
+                            const meals = mealsResponse.meals || [];
+                            const workouts = workoutsResponse.workouts || [];
+
+                            // Calculate totals
+                            const totalCalories = meals.reduce((sum, meal) => sum + (meal.calories || 0), 0);
+                            const totalMeals = meals.length;
+                            const totalWorkouts = workouts.length;
+
+                            // Update preview display
+                            document.getElementById('previewCalories').textContent = `${totalCalories} cal`;
+                            document.getElementById('previewMeals').textContent = `${totalMeals} meals`;
+                            document.getElementById('previewWorkouts').textContent = `${totalWorkouts} sessions`;
+
+                            console.log('✅ Preview data loaded:', { totalCalories, totalMeals, totalWorkouts });
+
+                        } catch (error) {
+                            console.error('❌ Preview loading error:', error);
+                            document.getElementById('previewCalories').textContent = 'N/A';
+                            document.getElementById('previewMeals').textContent = 'N/A';
+                            document.getElementById('previewWorkouts').textContent = 'N/A';
+                        }
+                    }
 
                     // Show detailed download progress with animations
                     // Show detailed download progress with animations - FIXED VERSION
-// Show detailed download progress with animations - UPDATED VERSION
-async function showDownloadProgress(format, startDate, endDate) {
-    const progressSteps = [
-        { message: "🔍 Collecting your data...", duration: 1000 },
-        { message: "📊 Analyzing progress patterns...", duration: 800 },
-        { message: "🎨 Formatting your report...", duration: 600 },
-        { message: `📥 Generating ${format.toUpperCase()} file...`, duration: 400 }
-    ];
+                    // Show detailed download progress with animations - UPDATED VERSION
+                    async function showDownloadProgress(format, startDate, endDate) {
+                        const progressSteps = [
+                            { message: "🔍 Collecting your data...", duration: 1000 },
+                            { message: "📊 Analyzing progress patterns...", duration: 800 },
+                            { message: "🎨 Formatting your report...", duration: 600 },
+                            { message: `📥 Generating ${format.toUpperCase()} file...`, duration: 400 }
+                        ];
 
-    // Show progress steps
-    for (let i = 0; i < progressSteps.length; i++) {
-        showMessage(progressSteps[i].message, 'info', progressSteps[i].duration);
-        await new Promise(resolve => setTimeout(resolve, progressSteps[i].duration));
-    }
+                        // Show progress steps
+                        for (let i = 0; i < progressSteps.length; i++) {
+                            showMessage(progressSteps[i].message, 'info', progressSteps[i].duration);
+                            await new Promise(resolve => setTimeout(resolve, progressSteps[i].duration));
+                        }
 
-    try {
-        console.log('📥 Starting file download...');
-        
-        // Get actual data using existing API methods
-        const [mealsResponse, workoutsResponse] = await Promise.all([
-            api.getAllMeals().catch(() => ({ meals: [] })),
-            api.getAllWorkouts().catch(() => ({ workouts: [] }))
-        ]);
-        
-        const meals = mealsResponse.meals || [];
-        const workouts = workoutsResponse.workouts || [];
-        
-        console.log('📊 Raw data loaded:', { 
-            totalMeals: meals.length, 
-            totalWorkouts: workouts.length 
-        });
-        
-        // MORE FLEXIBLE DATE FILTERING - use all data if date range is empty
-        let filteredMeals = meals;
-        let filteredWorkouts = workouts;
-        
-        // Only filter if we actually have data and dates make sense
-        if (meals.length > 0 || workouts.length > 0) {
-            const startDateObj = new Date(startDate);
-            const endDateObj = new Date(endDate);
-            
-            // Check if dates are valid
-            if (!isNaN(startDateObj.getTime()) && !isNaN(endDateObj.getTime())) {
-                filteredMeals = meals.filter(meal => {
-                    const mealDate = new Date(meal.createdAt);
-                    return !isNaN(mealDate.getTime()); // Include all valid dates for now
-                });
-                
-                filteredWorkouts = workouts.filter(workout => {
-                    const workoutDate = new Date(workout.createdAt);
-                    return !isNaN(workoutDate.getTime()); // Include all valid dates for now
-                });
-            }
-        }
-        
-        console.log('📋 Filtered data:', { 
-            filteredMeals: filteredMeals.length, 
-            filteredWorkouts: filteredWorkouts.length 
-        });
-        
-        // If still no data, use all available data
-        if (filteredMeals.length === 0 && meals.length > 0) {
-            filteredMeals = meals;
-            console.log('📝 Using all meals data due to date filtering issues');
-        }
-        
-        if (filteredWorkouts.length === 0 && workouts.length > 0) {
-            filteredWorkouts = workouts;
-            console.log('📝 Using all workouts data due to date filtering issues');
-        }
-        
-        // Generate file content based on format
-        let fileContent, mimeType, fileExtension;
-        
-        if (format === 'json') {
-            // JSON format
-            const reportData = {
-                reportInfo: {
-                    generatedAt: new Date().toISOString(),
-                    dateRange: { startDate, endDate },
-                    totalMeals: filteredMeals.length,
-                    totalWorkouts: filteredWorkouts.length,
-                    totalCalories: filteredMeals.reduce((sum, m) => sum + (m.calories || 0), 0)
-                },
-                meals: filteredMeals.map(meal => ({
-                    date: new Date(meal.createdAt).toLocaleDateString(),
-                    time: new Date(meal.createdAt).toLocaleTimeString(),
-                    type: meal.type || 'Meal',
-                    description: meal.description || '',
-                    calories: meal.calories || 0
-                })),
-                workouts: filteredWorkouts.map(workout => ({
-                    date: new Date(workout.createdAt).toLocaleDateString(),
-                    time: new Date(workout.createdAt).toLocaleTimeString(),
-                    type: workout.type || 'Workout',
-                    duration: workout.duration || 0,
-                    calories: workout.calories || 0
-                }))
-            };
-            
-            fileContent = JSON.stringify(reportData, null, 2);
-            mimeType = 'application/json';
-            fileExtension = 'json';
-            
-        } else if (format === 'csv') {
-            // CSV format
-            let csvContent = 'FitTracker Data Export\n';
-            csvContent += `Generated: ${new Date().toLocaleDateString()}\n`;
-            csvContent += `Date Range: ${startDate} to ${endDate}\n\n`;
-            
-            // Meals CSV
-            csvContent += 'MEALS DATA\n';
-            csvContent += 'Date,Time,Type,Description,Calories\n';
-            filteredMeals.forEach(meal => {
-                const date = new Date(meal.createdAt).toLocaleDateString();
-                const time = new Date(meal.createdAt).toLocaleTimeString();
-                const description = (meal.description || '').replace(/"/g, '""'); // Escape quotes
-                csvContent += `"${date}","${time}","${meal.type || 'Meal'}","${description}","${meal.calories || 0}"\n`;
-            });
-            
-            csvContent += '\nWORKOUTS DATA\n';
-            csvContent += 'Date,Time,Type,Duration (min),Calories Burned\n';
-            filteredWorkouts.forEach(workout => {
-                const date = new Date(workout.createdAt).toLocaleDateString();
-                const time = new Date(workout.createdAt).toLocaleTimeString();
-                csvContent += `"${date}","${time}","${workout.type || 'Workout'}","${workout.duration || 0}","${workout.calories || 0}"\n`;
-            });
-            
-            fileContent = csvContent;
-            mimeType = 'text/csv';
-            fileExtension = 'csv';
-        }
-        
-        // Create and download file
-        const blob = new Blob([fileContent], { type: mimeType });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `fittracker-report-${endDate}.${fileExtension}`;
-        a.style.display = 'none';
+                        try {
+                            console.log('📥 Starting file download...');
 
-        document.body.appendChild(a);
-        a.click();
+                            // Get actual data using existing API methods
+                            const [mealsResponse, workoutsResponse] = await Promise.all([
+                                api.getAllMeals().catch(() => ({ meals: [] })),
+                                api.getAllWorkouts().catch(() => ({ workouts: [] }))
+                            ]);
 
-        // Cleanup
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+                            const meals = mealsResponse.meals || [];
+                            const workouts = workoutsResponse.workouts || [];
 
-        // Success notification with celebration
-        showMessage(`🎉 Your ${format.toUpperCase()} fitness report has been downloaded successfully!`, 'success');
-        
-        console.log('✅ Download completed successfully');
+                            console.log('📊 Raw data loaded:', {
+                                totalMeals: meals.length,
+                                totalWorkouts: workouts.length
+                            });
 
-    } catch (error) {
-        console.error('❌ Download error:', error);
-        showMessage(`❌ Failed to download ${format.toUpperCase()} file. Please try again.`, 'error');
-    }
-}
+                            // MORE FLEXIBLE DATE FILTERING - use all data if date range is empty
+                            let filteredMeals = meals;
+                            let filteredWorkouts = workouts;
+
+                            // Only filter if we actually have data and dates make sense
+                            if (meals.length > 0 || workouts.length > 0) {
+                                const startDateObj = new Date(startDate);
+                                const endDateObj = new Date(endDate);
+
+                                // Check if dates are valid
+                                if (!isNaN(startDateObj.getTime()) && !isNaN(endDateObj.getTime())) {
+                                    filteredMeals = meals.filter(meal => {
+                                        const mealDate = new Date(meal.createdAt);
+                                        return !isNaN(mealDate.getTime()); // Include all valid dates for now
+                                    });
+
+                                    filteredWorkouts = workouts.filter(workout => {
+                                        const workoutDate = new Date(workout.createdAt);
+                                        return !isNaN(workoutDate.getTime()); // Include all valid dates for now
+                                    });
+                                }
+                            }
+
+                            console.log('📋 Filtered data:', {
+                                filteredMeals: filteredMeals.length,
+                                filteredWorkouts: filteredWorkouts.length
+                            });
+
+                            // If still no data, use all available data
+                            if (filteredMeals.length === 0 && meals.length > 0) {
+                                filteredMeals = meals;
+                                console.log('📝 Using all meals data due to date filtering issues');
+                            }
+
+                            if (filteredWorkouts.length === 0 && workouts.length > 0) {
+                                filteredWorkouts = workouts;
+                                console.log('📝 Using all workouts data due to date filtering issues');
+                            }
+
+                            // Generate file content based on format
+                            let fileContent, mimeType, fileExtension;
+
+                            if (format === 'json') {
+                                // JSON format
+                                const reportData = {
+                                    reportInfo: {
+                                        generatedAt: new Date().toISOString(),
+                                        dateRange: { startDate, endDate },
+                                        totalMeals: filteredMeals.length,
+                                        totalWorkouts: filteredWorkouts.length,
+                                        totalCalories: filteredMeals.reduce((sum, m) => sum + (m.calories || 0), 0)
+                                    },
+                                    meals: filteredMeals.map(meal => ({
+                                        date: new Date(meal.createdAt).toLocaleDateString(),
+                                        time: new Date(meal.createdAt).toLocaleTimeString(),
+                                        type: meal.type || 'Meal',
+                                        description: meal.description || '',
+                                        calories: meal.calories || 0
+                                    })),
+                                    workouts: filteredWorkouts.map(workout => ({
+                                        date: new Date(workout.createdAt).toLocaleDateString(),
+                                        time: new Date(workout.createdAt).toLocaleTimeString(),
+                                        type: workout.type || 'Workout',
+                                        duration: workout.duration || 0,
+                                        calories: workout.calories || 0
+                                    }))
+                                };
+
+                                fileContent = JSON.stringify(reportData, null, 2);
+                                mimeType = 'application/json';
+                                fileExtension = 'json';
+
+                            } else if (format === 'csv') {
+                                // CSV format
+                                let csvContent = 'FitTracker Data Export\n';
+                                csvContent += `Generated: ${new Date().toLocaleDateString()}\n`;
+                                csvContent += `Date Range: ${startDate} to ${endDate}\n\n`;
+
+                                // Meals CSV
+                                csvContent += 'MEALS DATA\n';
+                                csvContent += 'Date,Time,Type,Description,Calories\n';
+                                filteredMeals.forEach(meal => {
+                                    const date = new Date(meal.createdAt).toLocaleDateString();
+                                    const time = new Date(meal.createdAt).toLocaleTimeString();
+                                    const description = (meal.description || '').replace(/"/g, '""'); // Escape quotes
+                                    csvContent += `"${date}","${time}","${meal.type || 'Meal'}","${description}","${meal.calories || 0}"\n`;
+                                });
+
+                                csvContent += '\nWORKOUTS DATA\n';
+                                csvContent += 'Date,Time,Type,Duration (min),Calories Burned\n';
+                                filteredWorkouts.forEach(workout => {
+                                    const date = new Date(workout.createdAt).toLocaleDateString();
+                                    const time = new Date(workout.createdAt).toLocaleTimeString();
+                                    csvContent += `"${date}","${time}","${workout.type || 'Workout'}","${workout.duration || 0}","${workout.calories || 0}"\n`;
+                                });
+
+                                fileContent = csvContent;
+                                mimeType = 'text/csv';
+                                fileExtension = 'csv';
+                            }
+
+                            // Create and download file
+                            const blob = new Blob([fileContent], { type: mimeType });
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `fittracker-report-${endDate}.${fileExtension}`;
+                            a.style.display = 'none';
+
+                            document.body.appendChild(a);
+                            a.click();
+
+                            // Cleanup
+                            window.URL.revokeObjectURL(url);
+                            document.body.removeChild(a);
+
+                            // Success notification with celebration
+                            showMessage(`🎉 Your ${format.toUpperCase()} fitness report has been downloaded successfully!`, 'success');
+
+                            console.log('✅ Download completed successfully');
+
+                        } catch (error) {
+                            console.error('❌ Download error:', error);
+                            showMessage(`❌ Failed to download ${format.toUpperCase()} file. Please try again.`, 'error');
+                        }
+                    }
 
 
 
@@ -2164,7 +2147,7 @@ async function showDownloadProgress(format, startDate, endDate) {
                         }
                     }
 
-                    // Test the toast system - you can remove this after testing
+                    /// Test the toast system - you can remove this after testing
                     setTimeout(() => {
                         showMessage("🎉 Toast notifications are working!", "success");
                     }, 2000);
@@ -2676,225 +2659,222 @@ async function showDownloadProgress(format, startDate, endDate) {
                             }
                         }, 3000);
                     });
+                    async function loadProgressData() {
+                        try {
+                            console.log('📊 Loading progress analytics data...');
 
+                            const [mealsResponse, workoutsResponse] = await Promise.all([
+                                api.getAllMeals().catch(err => {
+                                    console.error('❌ Meals error:', err);
+                                    return { meals: [] };
+                                }),
+                                api.getAllWorkouts().catch(err => {
+                                    console.error('❌ Workouts error:', err);
+                                    return { workouts: [] };
+                                })
+                            ]);
+
+                            const meals = mealsResponse.meals || [];
+                            const workouts = workoutsResponse.workouts || [];
+
+                            console.log('✅ Progress data loaded:', {
+                                meals: meals.length,
+                                workouts: workouts.length,
+                                user: 'Unknown'
+                            });
+
+                            // Update analytics
+                            updateWeeklyStats(meals, workouts);
+                            updateGoalsStatus(meals, workouts);
+                            updateWeeklyChart(meals, workouts);
+
+                        } catch (error) {
+                            console.error('❌ Failed to load progress data:', error);
+                        }
+                    }
+
+                    function updateWeeklyStats(meals, workouts) {
+                        try {
+                            const now = new Date();
+                            const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
+
+                            // Filter this week's data
+                            const thisWeekMeals = meals.filter(meal => {
+                                const mealDate = new Date(meal.createdAt);
+                                return mealDate >= weekStart;
+                            });
+
+                            const thisWeekWorkouts = workouts.filter(workout => {
+                                const workoutDate = new Date(workout.createdAt);
+                                return workoutDate >= weekStart;
+                            });
+
+                            // Calculate stats
+                            const activeDays = new Set([
+                                ...thisWeekMeals.map(m => new Date(m.createdAt).toDateString()),
+                                ...thisWeekWorkouts.map(w => new Date(w.createdAt).toDateString())
+                            ]).size;
+
+                            const weeklyCalories = thisWeekMeals.reduce((sum, meal) => sum + (meal.calories || 0), 0);
+                            const weeklyMeals = thisWeekMeals.length;
+                            const weeklyWorkouts = thisWeekWorkouts.length;
+
+                            // Update UI
+                            document.getElementById('active-days').textContent = activeDays;
+                            document.getElementById('weekly-calories').textContent = weeklyCalories;
+                            document.getElementById('weekly-meals').textContent = weeklyMeals;
+                            document.getElementById('weekly-workouts').textContent = weeklyWorkouts;
+
+                            console.log('📊 Weekly stats updated:', {
+                                activeDays,
+                                weeklyCalories,
+                                weeklyMeals,
+                                weeklyWorkouts
+                            });
+
+                        } catch (error) {
+                            console.error('❌ Error updating weekly stats:', error);
+                        }
+                    }
+
+                    function updateGoalsStatus(meals, workouts) {
+                        try {
+                            // Get this week's data
+                            const now = new Date();
+                            const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
+
+                            const thisWeekMeals = meals.filter(meal => {
+                                const mealDate = new Date(meal.createdAt);
+                                return mealDate >= weekStart;
+                            });
+
+                            const thisWeekWorkouts = workouts.filter(workout => {
+                                const workoutDate = new Date(workout.createdAt);
+                                return workoutDate >= weekStart;
+                            });
+
+                            // Calculate progress
+                            const weeklyCalories = thisWeekMeals.reduce((sum, meal) => sum + (meal.calories || 0), 0);
+                            const caloriesGoal = 500;
+                            const mealsGoal = 3;
+                            const workoutsGoal = 1;
+
+                            const caloriesProgress = Math.min((weeklyCalories / caloriesGoal) * 100, 100);
+                            const mealsProgress = Math.min((thisWeekMeals.length / mealsGoal) * 100, 100);
+                            const workoutsProgress = Math.min((thisWeekWorkouts.length / workoutsGoal) * 100, 100);
+                            const overallProgress = Math.round((caloriesProgress + mealsProgress + workoutsProgress) / 3);
+
+                            // Update progress bars
+                            document.getElementById('calories-progress').style.width = caloriesProgress + '%';
+                            document.getElementById('meals-progress').style.width = mealsProgress + '%';
+                            document.getElementById('workouts-progress').style.width = workoutsProgress + '%';
+
+                            // Update status text
+                            document.getElementById('calories-status').textContent = `${weeklyCalories}/${caloriesGoal} calories`;
+                            document.getElementById('meals-status').textContent = `${thisWeekMeals.length}/${mealsGoal} meals`;
+                            document.getElementById('workouts-status').textContent = `${thisWeekWorkouts.length}/${workoutsGoal} workouts`;
+                            document.getElementById('overall-progress').innerHTML = `<i class="fas fa-trophy me-1"></i>Overall: ${overallProgress}%`;
+
+                            console.log('🎯 Goals status updated:', {
+                                calories: `${weeklyCalories}/${caloriesGoal}`,
+                                meals: `${thisWeekMeals.length}/${mealsGoal}`,
+                                workouts: `${thisWeekWorkouts.length}/${workoutsGoal}`,
+                                overall: `${overallProgress}%`
+                            });
+
+                        } catch (error) {
+                            console.error('❌ Error updating goals status:', error);
+                        }
+                    }
+
+                    function updateWeeklyChart(meals, workouts) {
+                        try {
+                            const canvas = document.getElementById('weeklyChart');
+                            const ctx = canvas.getContext('2d');
+
+                            // Clear canvas
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                            // Get last 7 days data
+                            const last7Days = [];
+                            for (let i = 6; i >= 0; i--) {
+                                const date = new Date();
+                                date.setDate(date.getDate() - i);
+                                const dayStr = date.toDateString();
+
+                                const dayMeals = meals.filter(m => new Date(m.createdAt).toDateString() === dayStr);
+                                const dayWorkouts = workouts.filter(w => new Date(w.createdAt).toDateString() === dayStr);
+                                const dayCalories = dayMeals.reduce((sum, m) => sum + (m.calories || 0), 0);
+
+                                last7Days.push({
+                                    day: date.toLocaleDateString('en', { weekday: 'short' }),
+                                    meals: dayMeals.length,
+                                    workouts: dayWorkouts.length,
+                                    calories: dayCalories
+                                });
+                            }
+
+                            // Draw simple chart
+                            const chartWidth = canvas.width - 80;
+                            const chartHeight = canvas.height - 80;
+                            const barWidth = chartWidth / 7;
+
+                            // Find max value for scaling
+                            const maxCalories = Math.max(...last7Days.map(d => d.calories), 100);
+
+                            ctx.fillStyle = '#6c757d';
+                            ctx.font = '12px Arial';
+
+                            // Draw bars and labels
+                            last7Days.forEach((day, index) => {
+                                const x = 40 + (index * barWidth);
+                                const barHeight = (day.calories / maxCalories) * chartHeight;
+                                const y = chartHeight - barHeight + 20;
+
+                                // Draw bar
+                                ctx.fillStyle = '#28a745';
+                                ctx.fillRect(x, y, barWidth - 10, barHeight);
+
+                                // Draw day label
+                                ctx.fillStyle = '#6c757d';
+                                ctx.textAlign = 'center';
+                                ctx.fillText(day.day, x + (barWidth - 10) / 2, chartHeight + 40);
+
+                                // Draw value label
+                                if (day.calories > 0) {
+                                    ctx.fillText(day.calories, x + (barWidth - 10) / 2, y - 5);
+                                }
+                            });
+
+                            // Draw title
+                            ctx.fillStyle = '#495057';
+                            ctx.font = 'bold 14px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.fillText('Daily Calories (Last 7 Days)', canvas.width / 2, 20);
+
+                            console.log('📈 Weekly progress chart updated:', last7Days);
+
+                        } catch (error) {
+                            console.error('❌ Error updating weekly chart:', error);
+                        }
+                    }
+
+                    // View toggle functions
+                    function showWeeklyView() {
+                        document.querySelectorAll('.btn-group .btn').forEach(btn => btn.classList.remove('active'));
+                        event.target.classList.add('active');
+                        console.log('📊 Switched to weekly view');
+                    }
+
+                    function showMonthlyView() {
+                        document.querySelectorAll('.btn-group .btn').forEach(btn => btn.classList.remove('active'));
+                        event.target.classList.add('active');
+                        console.log('📊 Switched to monthly view');
+                        alert('Monthly view coming soon!');
+                    }
                 </script>
                 <!-- ... rest of your HTML content ... -->
-<script>
-// Progress Analytics Functions - Add before </body>
-async function loadProgressData() {
-    try {
-        console.log('📊 Loading progress analytics data...');
-        
-        const [mealsResponse, workoutsResponse] = await Promise.all([
-            api.getAllMeals().catch(err => {
-                console.error('❌ Meals error:', err);
-                return { meals: [] };
-            }),
-            api.getAllWorkouts().catch(err => {
-                console.error('❌ Workouts error:', err);
-                return { workouts: [] };
-            })
-        ]);
-        
-        const meals = mealsResponse.meals || [];
-        const workouts = workoutsResponse.workouts || [];
-        
-        console.log('✅ Progress data loaded:', {
-            meals: meals.length,
-            workouts: workouts.length,
-            user: 'Unknown'
-        });
-        
-        // Update analytics
-        updateWeeklyStats(meals, workouts);
-        updateGoalsStatus(meals, workouts);
-        updateWeeklyChart(meals, workouts);
-        
-    } catch (error) {
-        console.error('❌ Failed to load progress data:', error);
-    }
-}
 
-function updateWeeklyStats(meals, workouts) {
-    try {
-        const now = new Date();
-        const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
-        
-        // Filter this week's data
-        const thisWeekMeals = meals.filter(meal => {
-            const mealDate = new Date(meal.createdAt);
-            return mealDate >= weekStart;
-        });
-        
-        const thisWeekWorkouts = workouts.filter(workout => {
-            const workoutDate = new Date(workout.createdAt);
-            return workoutDate >= weekStart;
-        });
-        
-        // Calculate stats
-        const activeDays = new Set([
-            ...thisWeekMeals.map(m => new Date(m.createdAt).toDateString()),
-            ...thisWeekWorkouts.map(w => new Date(w.createdAt).toDateString())
-        ]).size;
-        
-        const weeklyCalories = thisWeekMeals.reduce((sum, meal) => sum + (meal.calories || 0), 0);
-        const weeklyMeals = thisWeekMeals.length;
-        const weeklyWorkouts = thisWeekWorkouts.length;
-        
-        // Update UI
-        document.getElementById('active-days').textContent = activeDays;
-        document.getElementById('weekly-calories').textContent = weeklyCalories;
-        document.getElementById('weekly-meals').textContent = weeklyMeals;
-        document.getElementById('weekly-workouts').textContent = weeklyWorkouts;
-        
-        console.log('📊 Weekly stats updated:', {
-            activeDays,
-            weeklyCalories,
-            weeklyMeals,
-            weeklyWorkouts
-        });
-        
-    } catch (error) {
-        console.error('❌ Error updating weekly stats:', error);
-    }
-}
-
-function updateGoalsStatus(meals, workouts) {
-    try {
-        // Get this week's data
-        const now = new Date();
-        const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
-        
-        const thisWeekMeals = meals.filter(meal => {
-            const mealDate = new Date(meal.createdAt);
-            return mealDate >= weekStart;
-        });
-        
-        const thisWeekWorkouts = workouts.filter(workout => {
-            const workoutDate = new Date(workout.createdAt);
-            return workoutDate >= weekStart;
-        });
-        
-        // Calculate progress
-        const weeklyCalories = thisWeekMeals.reduce((sum, meal) => sum + (meal.calories || 0), 0);
-        const caloriesGoal = 500;
-        const mealsGoal = 3;
-        const workoutsGoal = 1;
-        
-        const caloriesProgress = Math.min((weeklyCalories / caloriesGoal) * 100, 100);
-        const mealsProgress = Math.min((thisWeekMeals.length / mealsGoal) * 100, 100);
-        const workoutsProgress = Math.min((thisWeekWorkouts.length / workoutsGoal) * 100, 100);
-        const overallProgress = Math.round((caloriesProgress + mealsProgress + workoutsProgress) / 3);
-        
-        // Update progress bars
-        document.getElementById('calories-progress').style.width = caloriesProgress + '%';
-        document.getElementById('meals-progress').style.width = mealsProgress + '%';
-        document.getElementById('workouts-progress').style.width = workoutsProgress + '%';
-        
-        // Update status text
-        document.getElementById('calories-status').textContent = `${weeklyCalories}/${caloriesGoal} calories`;
-        document.getElementById('meals-status').textContent = `${thisWeekMeals.length}/${mealsGoal} meals`;
-        document.getElementById('workouts-status').textContent = `${thisWeekWorkouts.length}/${workoutsGoal} workouts`;
-        document.getElementById('overall-progress').innerHTML = `<i class="fas fa-trophy me-1"></i>Overall: ${overallProgress}%`;
-        
-        console.log('🎯 Goals status updated:', {
-            calories: `${weeklyCalories}/${caloriesGoal}`,
-            meals: `${thisWeekMeals.length}/${mealsGoal}`,
-            workouts: `${thisWeekWorkouts.length}/${workoutsGoal}`,
-            overall: `${overallProgress}%`
-        });
-        
-    } catch (error) {
-        console.error('❌ Error updating goals status:', error);
-    }
-}
-
-function updateWeeklyChart(meals, workouts) {
-    try {
-        const canvas = document.getElementById('weeklyChart');
-        const ctx = canvas.getContext('2d');
-        
-        // Clear canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Get last 7 days data
-        const last7Days = [];
-        for (let i = 6; i >= 0; i--) {
-            const date = new Date();
-            date.setDate(date.getDate() - i);
-            const dayStr = date.toDateString();
-            
-            const dayMeals = meals.filter(m => new Date(m.createdAt).toDateString() === dayStr);
-            const dayWorkouts = workouts.filter(w => new Date(w.createdAt).toDateString() === dayStr);
-            const dayCalories = dayMeals.reduce((sum, m) => sum + (m.calories || 0), 0);
-            
-            last7Days.push({
-                day: date.toLocaleDateString('en', { weekday: 'short' }),
-                meals: dayMeals.length,
-                workouts: dayWorkouts.length,
-                calories: dayCalories
-            });
-        }
-        
-        // Draw simple chart
-        const chartWidth = canvas.width - 80;
-        const chartHeight = canvas.height - 80;
-        const barWidth = chartWidth / 7;
-        
-        // Find max value for scaling
-        const maxCalories = Math.max(...last7Days.map(d => d.calories), 100);
-        
-        ctx.fillStyle = '#6c757d';
-        ctx.font = '12px Arial';
-        
-        // Draw bars and labels
-        last7Days.forEach((day, index) => {
-            const x = 40 + (index * barWidth);
-            const barHeight = (day.calories / maxCalories) * chartHeight;
-            const y = chartHeight - barHeight + 20;
-            
-            // Draw bar
-            ctx.fillStyle = '#28a745';
-            ctx.fillRect(x, y, barWidth - 10, barHeight);
-            
-            // Draw day label
-            ctx.fillStyle = '#6c757d';
-            ctx.textAlign = 'center';
-            ctx.fillText(day.day, x + (barWidth - 10) / 2, chartHeight + 40);
-            
-            // Draw value label
-            if (day.calories > 0) {
-                ctx.fillText(day.calories, x + (barWidth - 10) / 2, y - 5);
-            }
-        });
-        
-        // Draw title
-        ctx.fillStyle = '#495057';
-        ctx.font = 'bold 14px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('Daily Calories (Last 7 Days)', canvas.width / 2, 20);
-        
-        console.log('📈 Weekly progress chart updated:', last7Days);
-        
-    } catch (error) {
-        console.error('❌ Error updating weekly chart:', error);
-    }
-}
-
-// View toggle functions
-function showWeeklyView() {
-    document.querySelectorAll('.btn-group .btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    console.log('📊 Switched to weekly view');
-}
-
-function showMonthlyView() {
-    document.querySelectorAll('.btn-group .btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    console.log('📊 Switched to monthly view');
-    alert('Monthly view coming soon!');
-}
-</script>
 
 
 </body>
