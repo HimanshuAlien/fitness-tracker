@@ -48,6 +48,7 @@ class ApiManager {
         }
     }
 
+    // Auth methods
     async register(userData) {
         return this.request('/auth/register', {
             method: 'POST',
@@ -62,6 +63,11 @@ class ApiManager {
         });
     }
 
+    async getCurrentUser() {
+        return this.request('/auth/me');
+    }
+
+    // Meal methods
     async addMeal(mealData) {
         return this.request('/meals', {
             method: 'POST',
@@ -69,6 +75,33 @@ class ApiManager {
         });
     }
 
+    async getTodayMeals() {
+        return this.request('/meals/today');
+    }
+
+    async getAllMeals() {
+        return this.request('/meals');
+    }
+
+    // ✅ ADD THIS: Delete meal method
+    async deleteMeal(mealId) {
+        try {
+            console.log('🗑️ API: Deleting meal:', mealId);
+            
+            if (!mealId) {
+                throw new Error('Meal ID is required');
+            }
+
+            return this.request(`/meals/${mealId}`, {
+                method: 'DELETE'
+            });
+        } catch (error) {
+            console.error('❌ API: Delete meal error:', error);
+            throw error;
+        }
+    }
+
+    // Workout methods
     async addWorkout(workoutData) {
         return this.request('/workouts', {
             method: 'POST',
@@ -76,17 +109,32 @@ class ApiManager {
         });
     }
 
-    async getTodayMeals() {
-        return this.request('/meals/today');
-    }
-
     async getTodayWorkouts() {
         return this.request('/workouts/today');
     }
 
-    async getCurrentUser() {
-        return this.request('/auth/me');
+    async getAllWorkouts() {
+        return this.request('/workouts');
+    }
+
+    // ✅ ADD THIS: Delete workout method
+    async deleteWorkout(workoutId) {
+        try {
+            console.log('🗑️ API: Deleting workout:', workoutId);
+            
+            if (!workoutId) {
+                throw new Error('Workout ID is required');
+            }
+
+            return this.request(`/workouts/${workoutId}`, {
+                method: 'DELETE'
+            });
+        } catch (error) {
+            console.error('❌ API: Delete workout error:', error);
+            throw error;
+        }
     }
 }
 
+// Create global API instance
 const api = new ApiManager();
