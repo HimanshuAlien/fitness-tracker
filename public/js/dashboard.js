@@ -2,7 +2,43 @@
 // Add this at the very beginning of your dashboard initialization
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Dashboard loading...');
+    // Section switching functionality - ADD THIS BACK
+function switchSection(sectionName) {
+    console.log('Switching to:', sectionName);
     
+    // Hide all content sections
+    const allSections = document.querySelectorAll('.content-section');
+    allSections.forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // Remove active class from all nav links
+    const allNavLinks = document.querySelectorAll('.sidebar .nav-link');
+    allNavLinks.forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    // Show target section
+    const targetSection = document.getElementById(sectionName + '-section');
+    if (targetSection) {
+        targetSection.style.display = 'block';
+    }
+    
+    // Add active class to clicked link
+    if (event && event.target) {
+        const clickedLink = event.target.closest('.nav-link');
+        if (clickedLink) {
+            clickedLink.classList.add('active');
+        }
+    }
+}
+
+// Initialize dashboard - ADD THIS BACK
+document.addEventListener('DOMContentLoaded', function() {
+    // Show meals section by default
+    switchSection('meals');
+});
+
     // CRITICAL: Set the token immediately when page loads
     const token = localStorage.getItem('fittracker_token');
     if (!token) {
