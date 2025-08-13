@@ -79,9 +79,16 @@ class ApiManager {
         return this.request('/meals/today');
     }
 
-    async getAllMeals() {
+   async getAllMeals() {
+    try {
+        console.log('📡 API: Fetching all meals...');
         return this.request('/meals');
+    } catch (error) {
+        console.error('❌ API: Error fetching meals:', error);
+        return { meals: [] };
     }
+}
+
 
     // ✅ ADD THIS: Delete meal method
     async deleteMeal(mealId) {
@@ -114,8 +121,15 @@ class ApiManager {
     }
 
     async getAllWorkouts() {
+    try {
+        console.log('📡 API: Fetching all workouts...');
         return this.request('/workouts');
+    } catch (error) {
+        console.error('❌ API: Error fetching workouts:', error);
+        return { workouts: [] };
     }
+}
+
 
     // ✅ ADD THIS: Delete workout method
     async deleteWorkout(workoutId) {
