@@ -82,7 +82,7 @@ class ApiManager {
    async getAllMeals() {
     try {
         console.log('📡 API: Fetching all meals...');
-        return this.request('/meals');
+        return this.request('/meals/all'); // Changed from /meals to /meals/all
     } catch (error) {
         console.error('❌ API: Error fetching meals:', error);
         return { meals: [] };
@@ -120,10 +120,10 @@ class ApiManager {
         return this.request('/workouts/today');
     }
 
-    async getAllWorkouts() {
+   async getAllWorkouts() {
     try {
         console.log('📡 API: Fetching all workouts...');
-        return this.request('/workouts');
+        return this.request('/workouts/all'); // Changed from /workouts to /workouts/all
     } catch (error) {
         console.error('❌ API: Error fetching workouts:', error);
         return { workouts: [] };
