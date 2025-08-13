@@ -7,7 +7,24 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const passport = require('passport');
 const session = require('express-session'); // ← MUST be here BEFORE using app.use(session())
+// Add these lines to your server.js if not already there
 const path = require('path');
+
+// Serve static files (add after other middleware)
+app.use(express.static('public'));
+
+// Serve frontend routes (add before MongoDB connection)
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Fallback route for SPA
+app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api') && !req.path.startsWith('/auth')) {
+        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    }
+});
+
 
 // STEP 3: Create Express app
 const app = express();
