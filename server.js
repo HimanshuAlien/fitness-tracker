@@ -1,4 +1,4 @@
-// STEP 1: Load environment variables FIRST
+// STEP 1: Load environment variables FIRS
 require('dotenv').config();
 
 // STEP 2: Import ALL required modules (including express-session)
