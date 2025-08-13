@@ -20,6 +20,31 @@ router.get('/today', auth, async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+// Add this route for getting ALL workouts (not just today)
+router.get('/', async (req, res) => {
+    try {
+        const userId = req.user.id;
+        console.log('📊 Fetching all workouts for user:', userId);
+
+        const workouts = await Workout.find({ user: userId })
+            .sort({ createdAt: -1 }) // Latest first
+            .limit(100); // Limit to last 100 workouts
+
+        console.log('✅ Found workouts:', workouts.length);
+
+        res.json({
+            success: true,
+            workouts: workouts
+        });
+
+    } catch (error) {
+        console.error('❌ Get all workouts error:', error);
+        res.status(500).json({
+            message: 'Failed to fetch workouts',
+            error: error.message
+        });
+    }
+});
 
 // Add workout
 router.post('/', auth, async (req, res) => {
