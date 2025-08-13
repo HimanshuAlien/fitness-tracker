@@ -3,7 +3,7 @@ class ApiManager {
         this.baseURL = window.location.hostname === 'localhost' 
             ? 'http://localhost:3000/api'
             : '/api';
-        this.token = null; // Don't auto-load token in constructor
+        this.token = null;
     }
 
     setToken(token) {
@@ -12,6 +12,7 @@ class ApiManager {
         if (token) {
             localStorage.setItem('fittracker_token', token);
         }
+    }
 
     removeToken() {
         this.token = null;
@@ -81,26 +82,22 @@ class ApiManager {
         return this.request('/meals/today');
     }
 
-   async getAllMeals() {
-    try {
-        console.log('📡 API: Fetching all meals...');
-        return this.request('/meals/all'); // Changed from /meals to /meals/all
-    } catch (error) {
-        console.error('❌ API: Error fetching meals:', error);
-        return { meals: [] };
+    async getAllMeals() {
+        try {
+            console.log('📡 API: Fetching all meals...');
+            return this.request('/meals/all');
+        } catch (error) {
+            console.error('❌ API: Error fetching meals:', error);
+            return { meals: [] };
+        }
     }
-}
 
-
-    // ✅ ADD THIS: Delete meal method
     async deleteMeal(mealId) {
         try {
             console.log('🗑️ API: Deleting meal:', mealId);
-            
             if (!mealId) {
                 throw new Error('Meal ID is required');
             }
-
             return this.request(`/meals/${mealId}`, {
                 method: 'DELETE'
             });
@@ -122,26 +119,22 @@ class ApiManager {
         return this.request('/workouts/today');
     }
 
-   async getAllWorkouts() {
-    try {
-        console.log('📡 API: Fetching all workouts...');
-        return this.request('/workouts/all'); // Changed from /workouts to /workouts/all
-    } catch (error) {
-        console.error('❌ API: Error fetching workouts:', error);
-        return { workouts: [] };
+    async getAllWorkouts() {
+        try {
+            console.log('📡 API: Fetching all workouts...');
+            return this.request('/workouts/all');
+        } catch (error) {
+            console.error('❌ API: Error fetching workouts:', error);
+            return { workouts: [] };
+        }
     }
-}
 
-
-    // ✅ ADD THIS: Delete workout method
     async deleteWorkout(workoutId) {
         try {
             console.log('🗑️ API: Deleting workout:', workoutId);
-            
             if (!workoutId) {
                 throw new Error('Workout ID is required');
             }
-
             return this.request(`/workouts/${workoutId}`, {
                 method: 'DELETE'
             });
