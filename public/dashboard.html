@@ -373,12 +373,13 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center" href="javascript:void(0)"
-                                onclick="switchSection('progress')">
-                                <i class="fas fa-chart-line me-3"></i>
-                                <span>📈 Progress</span>
-                            </a>
-                        </li>
+    <a class="nav-link d-flex align-items-center" href="javascript:void(0)"
+        onclick="switchSection('progress'); loadProgressData(); return false;">
+        <i class="fas fa-chart-line me-3"></i>
+        <span>📈 Progress</span>
+    </a>
+</li>
+
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center" href="javascript:void(0)"
                                 onclick="switchSection('friends')">
@@ -701,122 +702,128 @@
                     </div>
 
                     <!-- Progress Summary Cards -->
-                    <div class="row g-4 mb-4">
-                        <div class="col-md-3">
-                            <div class="card stat-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <div class="stat-icon">📅</div>
-                                    <h6 class="fw-bold text-muted mb-2">Days Active</h6>
-                                    <h3 id="activeDays" class="fw-bold" style="color: #667eea;">0</h3>
-                                    <small class="text-muted">This Week</small>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Progress Analytics Section - Add this as a new section in your dashboard -->
+<div id="progress-section" class="content-section" style="display: none;">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-chart-line me-2 text-primary"></i>Progress Analytics</h2>
+            <div class="btn-group">
+                <button class="btn btn-outline-primary btn-sm active" onclick="showWeeklyView()">
+                    <i class="fas fa-calendar-week me-1"></i>Weekly
+                </button>
+                <button class="btn btn-outline-primary btn-sm" onclick="showMonthlyView()">
+                    <i class="fas fa-calendar-alt me-1"></i>Monthly
+                </button>
+            </div>
+        </div>
 
-                        <div class="col-md-3">
-                            <div class="card stat-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <div class="stat-icon">🔥</div>
-                                    <h6 class="fw-bold text-muted mb-2">Weekly Calories</h6>
-                                    <h3 id="weeklyCalories" class="fw-bold" style="color: #ff6b6b;">0</h3>
-                                    <small class="text-muted">Total Burned</small>
-                                </div>
-                            </div>
+        <!-- Weekly Stats Cards -->
+        <div class="row mb-4" id="weekly-stats">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="text-primary mb-2">
+                            <i class="fas fa-calendar-check fa-2x"></i>
                         </div>
-
-                        <div class="col-md-3">
-                            <div class="card stat-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <div class="stat-icon">🥗</div>
-                                    <h6 class="fw-bold text-muted mb-2">Weekly Meals</h6>
-                                    <h3 id="weeklyMeals" class="fw-bold" style="color: #4ecdc4;">0</h3>
-                                    <small class="text-muted">Total Logged</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="card stat-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <div class="stat-icon">💪</div>
-                                    <h6 class="fw-bold text-muted mb-2">Weekly Workouts</h6>
-                                    <h3 id="weeklyWorkouts" class="fw-bold" style="color: #fa709a;">0</h3>
-                                    <small class="text-muted">Sessions</small>
-                                </div>
-                            </div>
-                        </div>
+                        <h3 class="fw-bold mb-1" id="active-days">0</h3>
+                        <p class="text-muted mb-0">Active Days</p>
                     </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="text-success mb-2">
+                            <i class="fas fa-fire fa-2x"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1" id="weekly-calories">0</h3>
+                        <p class="text-muted mb-0">Weekly Calories</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="text-warning mb-2">
+                            <i class="fas fa-utensils fa-2x"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1" id="weekly-meals">0</h3>
+                        <p class="text-muted mb-0">Weekly Meals</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="text-info mb-2">
+                            <i class="fas fa-dumbbell fa-2x"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1" id="weekly-workouts">0</h3>
+                        <p class="text-muted mb-0">Weekly Workouts</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                    <!-- Weekly Progress Chart -->
-                    <div class="row g-4">
-                        <div class="col-md-8">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0 fw-bold">📊 Weekly Progress Overview</h5>
+        <!-- Goal Status Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="mb-0"><i class="fas fa-target me-2 text-primary"></i>Weekly Goals Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Calories Goal</label>
+                                <div class="progress mb-2" style="height: 10px;">
+                                    <div class="progress-bar bg-success" id="calories-progress" role="progressbar" style="width: 0%"></div>
                                 </div>
-                                <div class="card-body">
-                                    <div id="weeklyProgressChart">
-                                        <div class="text-center py-4">
-                                            <div class="mb-3" style="font-size: 3rem; opacity: 0.3;">📈</div>
-                                            <p class="text-muted">Your weekly progress will appear here as you add more
-                                                data!</p>
-                                        </div>
-                                    </div>
+                                <small class="text-muted" id="calories-status">0/500 calories</small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Meals Goal</label>
+                                <div class="progress mb-2" style="height: 10px;">
+                                    <div class="progress-bar bg-warning" id="meals-progress" role="progressbar" style="width: 0%"></div>
                                 </div>
+                                <small class="text-muted" id="meals-status">0/3 meals</small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Workouts Goal</label>
+                                <div class="progress mb-2" style="height: 10px;">
+                                    <div class="progress-bar bg-info" id="workouts-progress" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <small class="text-muted" id="workouts-status">0/1 workouts</small>
                             </div>
                         </div>
-
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0 fw-bold">🎯 Goals Status</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <small class="fw-semibold">Daily Calories (500)</small>
-                                            <small id="caloriesGoalPercent">0%</small>
-                                        </div>
-                                        <div class="progress" style="height: 8px;">
-                                            <div class="progress-bar bg-danger" id="caloriesGoalBar" style="width: 0%">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <small class="fw-semibold">Daily Meals (3)</small>
-                                            <small id="mealsGoalPercent">0%</small>
-                                        </div>
-                                        <div class="progress" style="height: 8px;">
-                                            <div class="progress-bar bg-success" id="mealsGoalBar" style="width: 0%">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <small class="fw-semibold">Daily Workouts (1)</small>
-                                            <small id="workoutsGoalPercent">0%</small>
-                                        </div>
-                                        <div class="progress" style="height: 8px;">
-                                            <div class="progress-bar bg-primary" id="workoutsGoalBar" style="width: 0%">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-4 p-3 rounded"
-                                        style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);">
-                                        <div class="text-center">
-                                            <h4 id="overallGoalPercent" class="fw-bold mb-1">0%</h4>
-                                            <small class="text-muted">Overall Progress Today</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="text-center mt-3">
+                            <span class="badge bg-primary fs-6 px-3 py-2" id="overall-progress">
+                                <i class="fas fa-trophy me-1"></i>Overall: 0%
+                            </span>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Weekly Progress Chart -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="mb-0"><i class="fas fa-chart-area me-2 text-primary"></i>Weekly Progress Overview</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="weekly-chart-container" style="height: 300px;">
+                            <canvas id="weeklyChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
                 <!-- Friends Section -->
                 <!-- Enhanced Friends Section -->
@@ -2514,6 +2521,222 @@
 
                 </script>
                 <!-- ... rest of your HTML content ... -->
+<script>
+// Progress Analytics Functions - Add before </body>
+async function loadProgressData() {
+    try {
+        console.log('📊 Loading progress analytics data...');
+        
+        const [mealsResponse, workoutsResponse] = await Promise.all([
+            api.getAllMeals().catch(err => {
+                console.error('❌ Meals error:', err);
+                return { meals: [] };
+            }),
+            api.getAllWorkouts().catch(err => {
+                console.error('❌ Workouts error:', err);
+                return { workouts: [] };
+            })
+        ]);
+        
+        const meals = mealsResponse.meals || [];
+        const workouts = workoutsResponse.workouts || [];
+        
+        console.log('✅ Progress data loaded:', {
+            meals: meals.length,
+            workouts: workouts.length,
+            user: 'Unknown'
+        });
+        
+        // Update analytics
+        updateWeeklyStats(meals, workouts);
+        updateGoalsStatus(meals, workouts);
+        updateWeeklyChart(meals, workouts);
+        
+    } catch (error) {
+        console.error('❌ Failed to load progress data:', error);
+    }
+}
+
+function updateWeeklyStats(meals, workouts) {
+    try {
+        const now = new Date();
+        const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
+        
+        // Filter this week's data
+        const thisWeekMeals = meals.filter(meal => {
+            const mealDate = new Date(meal.createdAt);
+            return mealDate >= weekStart;
+        });
+        
+        const thisWeekWorkouts = workouts.filter(workout => {
+            const workoutDate = new Date(workout.createdAt);
+            return workoutDate >= weekStart;
+        });
+        
+        // Calculate stats
+        const activeDays = new Set([
+            ...thisWeekMeals.map(m => new Date(m.createdAt).toDateString()),
+            ...thisWeekWorkouts.map(w => new Date(w.createdAt).toDateString())
+        ]).size;
+        
+        const weeklyCalories = thisWeekMeals.reduce((sum, meal) => sum + (meal.calories || 0), 0);
+        const weeklyMeals = thisWeekMeals.length;
+        const weeklyWorkouts = thisWeekWorkouts.length;
+        
+        // Update UI
+        document.getElementById('active-days').textContent = activeDays;
+        document.getElementById('weekly-calories').textContent = weeklyCalories;
+        document.getElementById('weekly-meals').textContent = weeklyMeals;
+        document.getElementById('weekly-workouts').textContent = weeklyWorkouts;
+        
+        console.log('📊 Weekly stats updated:', {
+            activeDays,
+            weeklyCalories,
+            weeklyMeals,
+            weeklyWorkouts
+        });
+        
+    } catch (error) {
+        console.error('❌ Error updating weekly stats:', error);
+    }
+}
+
+function updateGoalsStatus(meals, workouts) {
+    try {
+        // Get this week's data
+        const now = new Date();
+        const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
+        
+        const thisWeekMeals = meals.filter(meal => {
+            const mealDate = new Date(meal.createdAt);
+            return mealDate >= weekStart;
+        });
+        
+        const thisWeekWorkouts = workouts.filter(workout => {
+            const workoutDate = new Date(workout.createdAt);
+            return workoutDate >= weekStart;
+        });
+        
+        // Calculate progress
+        const weeklyCalories = thisWeekMeals.reduce((sum, meal) => sum + (meal.calories || 0), 0);
+        const caloriesGoal = 500;
+        const mealsGoal = 3;
+        const workoutsGoal = 1;
+        
+        const caloriesProgress = Math.min((weeklyCalories / caloriesGoal) * 100, 100);
+        const mealsProgress = Math.min((thisWeekMeals.length / mealsGoal) * 100, 100);
+        const workoutsProgress = Math.min((thisWeekWorkouts.length / workoutsGoal) * 100, 100);
+        const overallProgress = Math.round((caloriesProgress + mealsProgress + workoutsProgress) / 3);
+        
+        // Update progress bars
+        document.getElementById('calories-progress').style.width = caloriesProgress + '%';
+        document.getElementById('meals-progress').style.width = mealsProgress + '%';
+        document.getElementById('workouts-progress').style.width = workoutsProgress + '%';
+        
+        // Update status text
+        document.getElementById('calories-status').textContent = `${weeklyCalories}/${caloriesGoal} calories`;
+        document.getElementById('meals-status').textContent = `${thisWeekMeals.length}/${mealsGoal} meals`;
+        document.getElementById('workouts-status').textContent = `${thisWeekWorkouts.length}/${workoutsGoal} workouts`;
+        document.getElementById('overall-progress').innerHTML = `<i class="fas fa-trophy me-1"></i>Overall: ${overallProgress}%`;
+        
+        console.log('🎯 Goals status updated:', {
+            calories: `${weeklyCalories}/${caloriesGoal}`,
+            meals: `${thisWeekMeals.length}/${mealsGoal}`,
+            workouts: `${thisWeekWorkouts.length}/${workoutsGoal}`,
+            overall: `${overallProgress}%`
+        });
+        
+    } catch (error) {
+        console.error('❌ Error updating goals status:', error);
+    }
+}
+
+function updateWeeklyChart(meals, workouts) {
+    try {
+        const canvas = document.getElementById('weeklyChart');
+        const ctx = canvas.getContext('2d');
+        
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Get last 7 days data
+        const last7Days = [];
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            const dayStr = date.toDateString();
+            
+            const dayMeals = meals.filter(m => new Date(m.createdAt).toDateString() === dayStr);
+            const dayWorkouts = workouts.filter(w => new Date(w.createdAt).toDateString() === dayStr);
+            const dayCalories = dayMeals.reduce((sum, m) => sum + (m.calories || 0), 0);
+            
+            last7Days.push({
+                day: date.toLocaleDateString('en', { weekday: 'short' }),
+                meals: dayMeals.length,
+                workouts: dayWorkouts.length,
+                calories: dayCalories
+            });
+        }
+        
+        // Draw simple chart
+        const chartWidth = canvas.width - 80;
+        const chartHeight = canvas.height - 80;
+        const barWidth = chartWidth / 7;
+        
+        // Find max value for scaling
+        const maxCalories = Math.max(...last7Days.map(d => d.calories), 100);
+        
+        ctx.fillStyle = '#6c757d';
+        ctx.font = '12px Arial';
+        
+        // Draw bars and labels
+        last7Days.forEach((day, index) => {
+            const x = 40 + (index * barWidth);
+            const barHeight = (day.calories / maxCalories) * chartHeight;
+            const y = chartHeight - barHeight + 20;
+            
+            // Draw bar
+            ctx.fillStyle = '#28a745';
+            ctx.fillRect(x, y, barWidth - 10, barHeight);
+            
+            // Draw day label
+            ctx.fillStyle = '#6c757d';
+            ctx.textAlign = 'center';
+            ctx.fillText(day.day, x + (barWidth - 10) / 2, chartHeight + 40);
+            
+            // Draw value label
+            if (day.calories > 0) {
+                ctx.fillText(day.calories, x + (barWidth - 10) / 2, y - 5);
+            }
+        });
+        
+        // Draw title
+        ctx.fillStyle = '#495057';
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Daily Calories (Last 7 Days)', canvas.width / 2, 20);
+        
+        console.log('📈 Weekly progress chart updated:', last7Days);
+        
+    } catch (error) {
+        console.error('❌ Error updating weekly chart:', error);
+    }
+}
+
+// View toggle functions
+function showWeeklyView() {
+    document.querySelectorAll('.btn-group .btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    console.log('📊 Switched to weekly view');
+}
+
+function showMonthlyView() {
+    document.querySelectorAll('.btn-group .btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    console.log('📊 Switched to monthly view');
+    alert('Monthly view coming soon!');
+}
+</script>
 
 
 </body>
