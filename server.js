@@ -5,7 +5,18 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
+// Now you can use session() without errors
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000
+    }
+}));
 
+// Rest of your server.js code...
 // Updated CORS for production
 const corsOptions = {
     origin: process.env.NODE_ENV === 'production'
