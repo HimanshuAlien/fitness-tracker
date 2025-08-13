@@ -85,26 +85,32 @@ class AuthManager {
         }
     }
 
-    async handleRegister(event) {
+   async handleRegister(event) {
     event.preventDefault();
     
     console.log('📝 Registration form submitted');
     
-    // Get form data with proper IDs
-    const name = document.getElementById('name')?.value?.trim();
-    const email = document.getElementById('email')?.value?.trim();
-    const password = document.getElementById('password')?.value?.trim();
-    const confirmPassword = document.getElementById('confirmPassword')?.value?.trim();
+    // Get form values with better error checking
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    
+    const name = nameInput ? nameInput.value.trim() : '';
+    const email = emailInput ? emailInput.value.trim() : '';
+    const password = passwordInput ? passwordInput.value : '';
+    const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : '';
 
-    console.log('📊 Form data extracted:', { 
-        name: name || 'MISSING', 
-        email: email || 'MISSING', 
-        password: password ? 'Present' : 'MISSING',
-        confirmPassword: confirmPassword ? 'Present' : 'MISSING'
+    console.log('📊 Form values:', { 
+        name: name,
+        email: email, 
+        password: password ? 'Present' : 'Missing',
+        nameLength: name.length
     });
 
-    // Enhanced validation
+    // Fixed validation - check actual length after trimming
     if (!name || name.length < 2) {
+        console.log('❌ Name validation failed. Name:', `"${name}"`, 'Length:', name.length);
         this.showMessage('Please enter a valid name (at least 2 characters).', 'error');
         return;
     }
@@ -145,6 +151,7 @@ class AuthManager {
         this.showLoading(false);
     }
 }
+
 
 
     // Google OAuth token handler (only for dashboard page)
