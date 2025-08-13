@@ -606,8 +606,16 @@
                                             <label for="mealSelect" class="form-label fw-semibold">
                                                 <i class="fas fa-utensils me-2 text-primary"></i>Choose Your Meal
                                             </label>
-                                            <select class="form-select" id="mealSelect">
-                                                <option value="">🍴 Select a delicious meal...</option>
+                                            <input 
+    type="text" 
+    class="form-control" 
+    id="mealSearch" 
+    list="foodOptions" 
+    placeholder="🍴 Type to search meals (e.g., idli, cereal, salad)..."
+    autocomplete="off"
+    required
+>
+<datalist id="foodOptions">
                                                 <option value="breakfast_cereal">🥣 Breakfast Cereal (350 cal)</option>
                                                 <option value="chicken_salad">🥗 Chicken Salad (280 cal)</option>
                                                 <option value="pasta_dinner">🍝 Pasta Dinner (520 cal)</option>
@@ -925,8 +933,16 @@
                                             <label for="exerciseSelect" class="form-label fw-semibold">
                                                 <i class="fas fa-running me-2 text-primary"></i>Choose Your Exercise
                                             </label>
-                                            <select class="form-select" id="exerciseSelect">
-                                                <option value="">💪 Select an awesome exercise...</option>
+                                           <input 
+    type="text" 
+    class="form-control" 
+    id="exerciseSearch" 
+    list="workoutOptions" 
+    placeholder="💪 Type to search exercises (e.g., walking, running, yoga)..."
+    autocomplete="off"
+    required
+>
+<datalist id="workoutOptions">
 <!-- WALKING VARIATIONS -->
     <option value="walking_slow_15min">🚶 Walking Slow (15 min) - 54 cal</option>
     <option value="walking_slow_30min">🚶 Walking Slow (30 min) - 107 cal</option>
@@ -1503,17 +1519,22 @@
                         }
 
                         // Meal select dropdown
-                        const mealSelect = document.getElementById('mealSelect');
-                        if (mealSelect) {
-                            mealSelect.addEventListener('change', updateMealInfo);
-                        }
+                        // New code
+const mealSearch = document.getElementById('mealSearch');
+const exerciseSearch = document.getElementById('exerciseSearch');
 
-                        // Exercise select dropdown
-                        const exerciseSelect = document.getElementById('exerciseSelect');
-                        if (exerciseSelect) {
-                            exerciseSelect.addEventListener('change', updateWorkoutInfo);
-                        }
-                    }
+mealSearch.addEventListener('input', function() {
+    const selectedMeal = this.value; // Returns: "🥣 Breakfast Cereal (350 cal)"
+    // Extract calories: selectedMeal.match(/(\d+)\s*cal/)[1]
+    // Your logic here
+});
+
+exerciseSearch.addEventListener('input', function() {
+    const selectedExercise = this.value; // Returns: "🚶 Walking Slow (15 min) - 54 cal"
+    // Extract calories: selectedExercise.match(/(\d+)\s*cal/)[1]
+    // Your logic here
+});
+
                     // Add this function to your JavaScript section in dashboard.html
                     function updateCaloriesProgress(current, goal = 500) {
                         const percentage = Math.min(100, Math.round((current / goal) * 100));
