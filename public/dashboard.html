@@ -2772,6 +2772,186 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
 
                 </script>
+<script>
+// CRITICAL FIX: Proper loading sequence
+let dashboardInitialized = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Dashboard DOM loaded...');
+    initializeDashboard();
+});
+
+async function initializeDashboard() {
+    if (dashboardInitialized) return;
+    
+    try {
+        // Step 1: Check authentication
+        const token = localStorage.getItem('fittracker_token');
+        if (!token) {
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        // Step 2: Wait for API to be ready and set token
+        let apiReady = false;
+        let attempts = 0;
+        
+        while (!apiReady && attempts < 20) {
+            if (typeof api !== 'undefined') {
+                api.setToken(token);
+                console.log('✅ API token set successfully');
+                apiReady = true;
+            } else {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                attempts++;
+            }
+        }
+        
+        if (!apiReady) {
+            console.error('❌ API not available after waiting');
+            return;
+        }
+        
+        // Step 3: Load dashboard data
+        console.log('📊 Loading dashboard data...');
+        await loadAllDashboardData();
+        
+        dashboardInitialized = true;
+        console.log('✅ Dashboard fully initialized');
+        
+    } catch (error) {
+        console.error('❌ Dashboard initialization failed:', error);
+    }
+}
+
+async function loadAllDashboardData() {
+    try {
+        // Load today's meals and workouts
+        const [mealsResponse, workoutsResponse] = await Promise.all([
+            api.getTodayMeals(),
+            api.getTodayWorkouts()
+        ]);
+        
+        console.log('✅ Data loaded successfully:', {
+            meals: mealsResponse?.meals?.length || 0,
+            workouts: workoutsResponse?.workouts?.length || 0
+        });
+        
+        // Update UI elements
+        if (typeof displayTodayMeals === 'function') {
+            displayTodayMeals(mealsResponse?.meals || []);
+        }
+        
+        if (typeof displayTodayWorkouts === 'function') {
+            displayTodayWorkouts(workoutsResponse?.workouts || []);
+        }
+        
+        // Update meal and workout lists in DOM
+        updateMealsList(mealsResponse?.meals || []);
+        updateWorkoutsList(workoutsResponse?.workouts || []);
+        
+    } catch (error) {
+        console.error('❌ Error loading dashboard data:', error);
+        showErrorMessage('Failed to load dashboard data. Please refresh the page.');
+    }
+}
+
+function updateMealsList(meals) {
+    const mealsContainer = document.querySelector('#today-meals, .meals-list, [data-meals-container]');
+    if (!mealsContainer) return;
+    
+    if (meals.length === 0) {
+        mealsContainer.innerHTML = '<p class="text-muted">No meals logged today. Add your first meal!</p>';
+        return;
+    }
+    
+    mealsContainer.innerHTML = meals.map(meal => `
+        <div class="meal-item d-flex justify-content-between align-items-center p-3 mb-2 border rounded">
+            <div>
+                <h6 class="mb-1">${meal.type || 'Meal'}</h6>
+                <small class="text-muted">${meal.description || 'No description'}</small>
+                <div class="mt-1">
+                    <span class="badge bg-primary">${meal.calories || 0} cal</span>
+                </div>
+            </div>
+            <button class="btn btn-danger btn-sm delete-meal-btn" data-meal-id="${meal._id}">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `).join('');
+    
+    // Reattach delete listeners
+    attachMealDeleteListeners();
+}
+
+function updateWorkoutsList(workouts) {
+    const workoutsContainer = document.querySelector('#today-workouts, .workouts-list, [data-workouts-container]');
+    if (!workoutsContainer) return;
+    
+    if (workouts.length === 0) {
+        workoutsContainer.innerHTML = '<p class="text-muted">No workouts logged today. Start your first workout!</p>';
+        return;
+    }
+    
+    workoutsContainer.innerHTML = workouts.map(workout => `
+        <div class="workout-item d-flex justify-content-between align-items-center p-3 mb-2 border rounded">
+            <div>
+                <h6 class="mb-1">${workout.type || 'Workout'}</h6>
+                <small class="text-muted">${workout.duration || 0} minutes</small>
+                <div class="mt-1">
+                    <span class="badge bg-success">${workout.calories || 0} cal burned</span>
+                </div>
+            </div>
+            <button class="btn btn-danger btn-sm delete-workout-btn" data-workout-id="${workout._id}">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `).join('');
+    
+    // Reattach delete listeners
+    attachWorkoutDeleteListeners();
+}
+
+function attachMealDeleteListeners() {
+    document.querySelectorAll('.delete-meal-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const mealId = this.getAttribute('data-meal-id');
+            if (confirm('Delete this meal?')) {
+                try {
+                    await api.deleteMeal(mealId);
+                    await loadAllDashboardData(); // Refresh data
+                } catch (error) {
+                    console.error('❌ Delete meal error:', error);
+                }
+            }
+        });
+    });
+}
+
+function attachWorkoutDeleteListeners() {
+    document.querySelectorAll('.delete-workout-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const workoutId = this.getAttribute('data-workout-id');
+            if (confirm('Delete this workout?')) {
+                try {
+                    await api.deleteWorkout(workoutId);
+                    await loadAllDashboardData(); // Refresh data
+                } catch (error) {
+                    console.error('❌ Delete workout error:', error);
+                }
+            }
+        });
+    });
+}
+
+function showErrorMessage(message) {
+    console.error('📊 Dashboard Error:', message);
+}
+
+// Make loadAllDashboardData available globally for other scripts
+window.loadAllDashboardData = loadAllDashboardData;
+</script>
+
                 <!-- ... rest of your HTML content ... -->
 <!-- At the bottom of dashboard.html, before closing </body> -->
 <script src="js/api.js"></script>
