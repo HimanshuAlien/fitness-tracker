@@ -3,13 +3,15 @@ class ApiManager {
         this.baseURL = window.location.hostname === 'localhost' 
             ? 'http://localhost:3000/api'
             : '/api';
-        this.token = localStorage.getItem('fittracker_token');
+        this.token = null; // Don't auto-load token in constructor
     }
 
     setToken(token) {
+        console.log('🔑 Setting API token:', token ? 'Present' : 'Missing');
         this.token = token;
-        localStorage.setItem('fittracker_token', token);
-    }
+        if (token) {
+            localStorage.setItem('fittracker_token', token);
+        }
 
     removeToken() {
         this.token = null;
