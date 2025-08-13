@@ -600,22 +600,22 @@
                                     <i class="fas fa-plus-circle me-2" style="font-size: 1.3rem;"></i>
                                     <h5 class="mb-0 fw-bold">🥙 Add New Meal</h5>
                                 </div>
-                                <div class="card-body p-4">
-                                    <form id="mealForm">
-                                        <div class="mb-4">
-                                            <label for="mealSelect" class="form-label fw-semibold">
-                                                <i class="fas fa-utensils me-2 text-primary"></i>Choose Your Meal
-                                            </label>
-                                            <input 
-    type="text" 
-    class="form-control" 
-    id="mealSearch" 
-    list="foodOptions" 
-    placeholder="🍴 Type to search meals (e.g., idli, cereal, salad)..."
-    autocomplete="off"
-    required
->
-<datalist id="foodOptions">
+                               <div class="card-body p-4">
+    <form id="mealForm">
+        <div class="mb-4">
+            <label for="mealSelect" class="form-label fw-semibold">
+                <i class="fas fa-utensils me-2 text-primary"></i>Choose Your Meal
+            </label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="mealSelect"
+                list="foodOptions" 
+                placeholder="🍴 Type to search meals..."
+                autocomplete="off"
+                required
+            >
+            <datalist id="foodOptions">
                                                 <option value="breakfast_cereal">🥣 Breakfast Cereal (350 cal)</option>
                                                 <option value="chicken_salad">🥗 Chicken Salad (280 cal)</option>
                                                 <option value="pasta_dinner">🍝 Pasta Dinner (520 cal)</option>
@@ -884,8 +884,8 @@
     <option value="thandai">🥛 Thandai (1 glass) - 180 cal</option>
     <option value="rose_milk">🌹 Rose Milk (1 glass) - 160 cal</option>
     <option value="badam_milk">🌰 Badam Milk (1 glass) - 180 cal</option>
-
-                                            </select>
+</datalist>
+                                        
                                         </div>
                                         <button type="submit" class="btn btn-success btn-lg w-100">
                                             <i class="fas fa-plus me-2"></i>✨ Add to My Meals
@@ -937,21 +937,21 @@
                                     <h5 class="mb-0 fw-bold">🏃 Log Workout</h5>
                                 </div>
                                 <div class="card-body p-4">
-                                    <form id="workoutForm">
-                                        <div class="mb-4">
-                                            <label for="exerciseSelect" class="form-label fw-semibold">
-                                                <i class="fas fa-running me-2 text-primary"></i>Choose Your Exercise
-                                            </label>
-                                           <input 
-    type="text" 
-    class="form-control" 
-    id="exerciseSearch" 
-    list="workoutOptions" 
-    placeholder="💪 Type to search exercises (e.g., walking, running, yoga)..."
-    autocomplete="off"
-    required
->
-<datalist id="workoutOptions">
+    <form id="workoutForm">
+        <div class="mb-4">
+            <label for="exerciseSelect" class="form-label fw-semibold">
+                <i class="fas fa-running me-2 text-primary"></i>Choose Your Exercise
+            </label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="exerciseSelect"
+                list="workoutOptions" 
+                placeholder="💪 Type to search exercises..."
+                autocomplete="off"
+                required
+            >
+            <datalist id="workoutOptions">
 <!-- WALKING VARIATIONS -->
     <option value="walking_slow_15min">🚶 Walking Slow (15 min) - 54 cal</option>
     <option value="walking_slow_30min">🚶 Walking Slow (30 min) - 107 cal</option>
@@ -1174,7 +1174,7 @@
                                                 <option value="swimming_30min">🏊 Swimming (30 min) - 350 cal</option>
                                                 <option value="yoga_45min">🧘 Yoga (45 min) - 150 cal</option>
                                                 <option value="boxing_30min">🥊 Boxing (30 min) - 300 cal</option>
-                                            </select>
+                                        
                                         </div>
                                         <button type="submit" class="btn btn-primary btn-lg w-100">
                                             <i class="fas fa-plus me-2"></i>🔥 Log My Workout
