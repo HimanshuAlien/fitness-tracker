@@ -1939,6 +1939,60 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         showMessage(`Switched to ${newTheme} theme`, 'success');
                     }
+// Add this to your dashboard.html or update existing dark mode script
+function initializeDarkMode() {
+    const darkModeToggle = document.getElementById('darkModeToggle') || document.querySelector('.dark-mode-toggle, [data-theme-toggle]');
+    
+    if (!darkModeToggle) {
+        console.log('❌ Dark mode toggle not found');
+        return;
+    }
+
+    // Check saved theme or default to light
+    const savedTheme = localStorage.getItem('fittracker-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    
+    // Update toggle state
+    if (savedTheme === 'dark') {
+        darkModeToggle.classList.add('active');
+        document.body.classList.add('dark-theme');
+    }
+
+    // Toggle event listener
+    darkModeToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        // Apply theme immediately
+        document.documentElement.setAttribute('data-theme', newTheme);
+        document.body.classList.toggle('dark-theme', newTheme === 'dark');
+        
+        // Update toggle appearance
+        this.classList.toggle('active', newTheme === 'dark');
+        
+        // Save preference
+        localStorage.setItem('fittracker-theme', newTheme);
+        
+        console.log('🌓 Theme switched to:', newTheme);
+    });
+
+    console.log('✅ Dark mode initialized with theme:', savedTheme);
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDarkMode();
+});
+
+// Also initialize when navigating between sections
+document.addEventListener('click', function(e) {
+    if (e.target.matches('[data-section], .nav-link')) {
+        setTimeout(initializeDarkMode, 100);
+    }
+});
+
                     // Real-time motivational messages system
                     const motivationalMessages = [
                         "🔥 You're crushing your fitness goals!",
