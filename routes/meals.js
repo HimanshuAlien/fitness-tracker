@@ -5,20 +5,32 @@ const auth = require('../middleware/auth');
 const router = express.Router();
 
 // Get today's meals
-router.get('/today', auth, async (req, res) => {
+// Add this route for getting ALL meals (not just today)
+router.get('/', async (req, res) => {
     try {
-        const today = new Date().toISOString().split('T')[0];
-        const meals = await Meal.find({
-            user: req.userId,
-            dateString: today
-        }).sort({ createdAt: -1 });
+        const userId = req.user.id;
+        console.log('📊 Fetching all meals for user:', userId);
 
-        res.json({ meals });
+        const meals = await Meal.find({ user: userId })
+            .sort({ createdAt: -1 }) // Latest first
+            .limit(100); // Limit to last 100 meals
+
+        console.log('✅ Found meals:', meals.length);
+
+        res.json({
+            success: true,
+            meals: meals
+        });
+
     } catch (error) {
-        console.error('Get meals error:', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('❌ Get all meals error:', error);
+        res.status(500).json({
+            message: 'Failed to fetch meals',
+            error: error.message
+        });
     }
 });
+
 
 // Add meal
 router.post('/', auth, async (req, res) => {
