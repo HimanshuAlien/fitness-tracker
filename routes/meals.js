@@ -6,9 +6,10 @@ const router = express.Router();
 
 // Get today's meals
 // Add this route for getting ALL meals (not just today)
-router.get('/', async (req, res) => {
+// Get ALL meals (FIXED with proper auth and path)
+router.get('/all', auth, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.userId; // Use req.userId (not req.user.id)
         console.log('📊 Fetching all meals for user:', userId);
 
         const meals = await Meal.find({ user: userId })
