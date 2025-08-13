@@ -10,6 +10,57 @@
     --bg-color: #ffffff;
     --text-color: #333333;
 }
+/* Dark Mode Styles */
+[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --border-color: #404040;
+    --card-bg: #333333;
+}
+
+[data-theme="dark"] body,
+body.dark-theme {
+    background-color: var(--bg-primary, #1a1a1a) !important;
+    color: var(--text-primary, #ffffff) !important;
+}
+
+[data-theme="dark"] .card,
+.dark-theme .card {
+    background-color: var(--card-bg, #333333) !important;
+    border-color: var(--border-color, #404040) !important;
+    color: var(--text-primary, #ffffff) !important;
+}
+
+[data-theme="dark"] .navbar,
+.dark-theme .navbar {
+    background-color: var(--bg-secondary, #2d2d2d) !important;
+}
+
+[data-theme="dark"] .btn-outline-primary,
+.dark-theme .btn-outline-primary {
+    border-color: #6c757d;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .btn-outline-primary:hover,
+.dark-theme .btn-outline-primary:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+/* Dark mode toggle button styling */
+.dark-mode-toggle {
+    transition: all 0.3s ease;
+}
+
+.dark-mode-toggle.active {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: #000 !important;
+}
+
 
 [data-theme="dark"] {
     --bg-color: #1a1a1a;
