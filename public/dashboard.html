@@ -1902,30 +1902,29 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
 
-                    // Enhanced theme toggle with smooth transition
                     function toggleTheme() {
                         const body = document.body;
                         const currentTheme = body.getAttribute('data-theme') || 'light';
                         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
-                        // Add transition effect
+                        // Add transition for smooth theme change
                         body.style.transition = 'all 0.3s ease';
 
+                        // Apply theme
                         body.setAttribute('data-theme', newTheme);
                         localStorage.setItem('fittracker_theme', newTheme);
 
-                        const themeMessages = {
-                            'dark': '🌙 Dark mode activated! Easy on the eyes.',
-                            'light': '☀️ Light mode activated! Bright and cheerful.'
-                        };
-
-                        showMessage(themeMessages[newTheme], 'info', 3000);
-
-                        // Update theme icon in navbar
-                        const themeIcon = document.querySelector('[onclick="toggleTheme()"] i');
-                        if (themeIcon) {
-                            themeIcon.className = newTheme === 'dark' ? 'fas fa-sun me-2' : 'fas fa-moon me-2';
+                        // Update the theme with proper colors
+                        if (newTheme === 'dark') {
+                            applyDarkTheme();
+                            showMessage('🌙 Dark mode activated! Easy on the eyes.', 'info', 3000);
+                        } else {
+                            applyLightTheme();
+                            showMessage('☀️ Light mode activated! Bright and cheerful.', 'info', 3000);
                         }
+
+                        // Update theme icon in dropdown
+                        updateThemeIcon(newTheme);
 
                         // Remove transition after animation
                         setTimeout(() => {
@@ -1933,6 +1932,240 @@ document.addEventListener('DOMContentLoaded', function() {
                         }, 300);
                     }
 
+                    // Apply dark theme with proper text colors
+                    function applyDarkTheme() {
+                        // Apply dark theme CSS class
+                        document.body.classList.add('dark-theme');
+                        document.body.classList.remove('light-theme');
+
+                        // Update CSS custom properties for dark theme
+                        const root = document.documentElement;
+                        root.style.setProperty('--bs-body-bg', '#1a1a2e');
+                        root.style.setProperty('--bs-body-color', '#ffffff');
+                        root.style.setProperty('--bs-card-bg', '#16213e');
+                        root.style.setProperty('--bs-border-color', '#0f3460');
+                        root.style.setProperty('--bs-text-muted', '#a8b2d1');
+
+                        // Create and inject dark theme styles
+                        let darkStylesheet = document.getElementById('dark-theme-styles');
+                        if (!darkStylesheet) {
+                            darkStylesheet = document.createElement('style');
+                            darkStylesheet.id = 'dark-theme-styles';
+                            document.head.appendChild(darkStylesheet);
+                        }
+
+                        darkStylesheet.textContent = `
+        .dark-theme {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .navbar {
+            background: linear-gradient(135deg, #0f3460 0%, #533483 100%) !important;
+        }
+        
+        .dark-theme .sidebar {
+            background: linear-gradient(180deg, #16213e 0%, #1a1a2e 100%) !important;
+            border-color: #0f3460 !important;
+        }
+        
+        .dark-theme .nav-link {
+            color: #a8b2d1 !important;
+        }
+        
+        .dark-theme .nav-link:hover {
+            color: #ffffff !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+        }
+        
+        .dark-theme .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .card {
+            background: rgba(22, 33, 62, 0.95) !important;
+            border-color: #0f3460 !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .card-header {
+            background: linear-gradient(135deg, #0f3460 0%, #533483 100%) !important;
+            border-color: #0f3460 !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .stat-card {
+            background: rgba(22, 33, 62, 0.95) !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .stat-card h2,
+        .dark-theme .stat-card h3,
+        .dark-theme .stat-card h5,
+        .dark-theme .stat-card h6 {
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .text-muted {
+            color: #a8b2d1 !important;
+        }
+        
+        .dark-theme .fw-bold,
+        .dark-theme .fw-semibold {
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .activity-item {
+            background: rgba(22, 33, 62, 0.8) !important;
+            border-color: #0f3460 !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .activity-item:hover {
+            background: rgba(22, 33, 62, 1) !important;
+            border-color: #667eea !important;
+        }
+        
+        .dark-theme .form-control,
+        .dark-theme .form-select {
+            background-color: #16213e !important;
+            border-color: #0f3460 !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .form-control:focus,
+        .dark-theme .form-select:focus {
+            background-color: #16213e !important;
+            border-color: #667eea !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+        }
+        
+        .dark-theme .form-control::placeholder {
+            color: #a8b2d1 !important;
+        }
+        
+        .dark-theme .dropdown-menu {
+            background-color: #16213e !important;
+            border-color: #0f3460 !important;
+        }
+        
+        .dark-theme .dropdown-item {
+            color: #a8b2d1 !important;
+        }
+        
+        .dark-theme .dropdown-item:hover,
+        .dark-theme .dropdown-item:focus {
+            background-color: rgba(102, 126, 234, 0.2) !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .alert {
+            background: rgba(22, 33, 62, 0.9) !important;
+            border-color: #0f3460 !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .alert-info {
+            background: rgba(102, 126, 234, 0.2) !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .alert-success {
+            background: rgba(17, 153, 142, 0.2) !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .alert-warning {
+            background: rgba(253, 187, 45, 0.2) !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .badge {
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .border-bottom {
+            border-color: #0f3460 !important;
+        }
+        
+        .dark-theme .bg-light {
+            background: rgba(22, 33, 62, 0.5) !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme h1, .dark-theme h2, .dark-theme h3, 
+        .dark-theme h4, .dark-theme h5, .dark-theme h6,
+        .dark-theme .h1, .dark-theme .h2, .dark-theme .h3,
+        .dark-theme .h4, .dark-theme .h5, .dark-theme .h6 {
+            color: #ffffff !important;
+        }
+        
+        .dark-theme p, .dark-theme span, .dark-theme div {
+            color: inherit !important;
+        }
+        
+        .dark-theme .card-title,
+        .dark-theme .card-text {
+            color: #ffffff !important;
+        }
+        
+        .dark-theme small {
+            color: #a8b2d1 !important;
+        }
+        
+        /* Progress bars remain colorful */
+        .dark-theme .progress {
+            background-color: rgba(15, 52, 96, 0.3) !important;
+        }
+        
+        /* Stat card specific colors remain vibrant */
+        .dark-theme .stat-card.calories-card h2 {
+            color: #ff6b6b !important;
+        }
+        
+        .dark-theme .stat-card.meals-card h2 {
+            color: #4ecdc4 !important;
+        }
+        
+        .dark-theme .stat-card.workouts-card h2 {
+            color: #fa709a !important;
+        }
+        
+        .dark-theme .stat-card.progress-card h2 {
+            color: #667eea !important;
+        }
+    `;
+                    }
+
+                    // Apply light theme
+                    function applyLightTheme() {
+                        // Remove dark theme class and styles
+                        document.body.classList.add('light-theme');
+                        document.body.classList.remove('dark-theme');
+
+                        // Remove dark theme stylesheet
+                        const darkStylesheet = document.getElementById('dark-theme-styles');
+                        if (darkStylesheet) {
+                            darkStylesheet.remove();
+                        }
+
+                        // Reset CSS custom properties for light theme
+                        const root = document.documentElement;
+                        root.style.setProperty('--bs-body-bg', '#ffffff');
+                        root.style.setProperty('--bs-body-color', '#212529');
+                        root.style.setProperty('--bs-card-bg', '#ffffff');
+                        root.style.setProperty('--bs-border-color', '#dee2e6');
+                        root.style.setProperty('--bs-text-muted', '#6c757d');
+
+                        // Reset body styles
+                        document.body.style.background = 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)';
+                        document.body.style.color = '#212529';
+                    }
+
+                    // Update theme icon in dropdown with better text handling
+                    // Simple fixed toggleTheme function
                     function toggleTheme() {
                         const body = document.body;
                         const currentTheme = body.getAttribute('data-theme') || 'light';
@@ -1941,61 +2174,56 @@ document.addEventListener('DOMContentLoaded', function() {
                         body.setAttribute('data-theme', newTheme);
                         localStorage.setItem('fittracker_theme', newTheme);
 
-                        showMessage(`Switched to ${newTheme} theme`, 'success');
+                        if (newTheme === 'dark') {
+                            applyDarkTheme();
+                            showMessage('🌙 Dark mode on', 'info', 2000);
+                        } else {
+                            applyLightTheme();
+                            showMessage('☀️ Light mode on', 'info', 2000);
+                        }
+
+                        // Update icon text
+                        const themeLink = document.querySelector('[onclick="toggleTheme()"]');
+                        if (themeLink) {
+                            if (newTheme === 'dark') {
+                                themeLink.innerHTML = '<i class="fas fa-sun me-2"></i>☀️ Light Mode';
+                            } else {
+                                themeLink.innerHTML = '<i class="fas fa-moon me-2"></i>🌙 Dark Mode';
+                            }
+                        }
                     }
-// Add this to your dashboard.html or update existing dark mode script
-function initializeDarkMode() {
-    const darkModeToggle = document.getElementById('darkModeToggle') || document.querySelector('.dark-mode-toggle, [data-theme-toggle]');
-    
-    if (!darkModeToggle) {
-        console.log('❌ Dark mode toggle not found');
-        return;
-    }
 
-    // Check saved theme or default to light
-    const savedTheme = localStorage.getItem('fittracker-theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    
-    // Update toggle state
-    if (savedTheme === 'dark') {
-        darkModeToggle.classList.add('active');
-        document.body.classList.add('dark-theme');
-    }
 
-    // Toggle event listener
-    darkModeToggle.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        // Apply theme immediately
-        document.documentElement.setAttribute('data-theme', newTheme);
-        document.body.classList.toggle('dark-theme', newTheme === 'dark');
-        
-        // Update toggle appearance
-        this.classList.toggle('active', newTheme === 'dark');
-        
-        // Save preference
-        localStorage.setItem('fittracker-theme', newTheme);
-        
-        console.log('🌓 Theme switched to:', newTheme);
-    });
+                    // Load saved theme on page load with proper initialization
+                    function loadSavedTheme() {
+                        const savedTheme = localStorage.getItem('fittracker_theme');
+                        if (savedTheme === 'dark') {
+                            document.body.setAttribute('data-theme', 'dark');
+                            applyDarkTheme();
+                            updateThemeIcon('dark');
+                        } else {
+                            document.body.setAttribute('data-theme', 'light');
+                            applyLightTheme();
+                            updateThemeIcon('light');
+                        }
+                    }
 
-    console.log('✅ Dark mode initialized with theme:', savedTheme);
-}
+                    // Enhanced initialization
+                    document.addEventListener('DOMContentLoaded', function () {
+                        console.log('🚀 Dashboard initialized');
 
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-    initializeDarkMode();
-});
+                        // Load theme first
+                        loadSavedTheme();
 
-// Also initialize when navigating between sections
-document.addEventListener('click', function(e) {
-    if (e.target.matches('[data-section], .nav-link')) {
-        setTimeout(initializeDarkMode, 100);
-    }
-});
+                        // Then initialize other components
+                        switchSection('dashboard');
+
+                        // Load today's data
+                        setTimeout(loadTodayData, 1000);
+
+                        // Setup form listeners
+                        setupFormListeners();
+                    });
 
                     // Real-time motivational messages system
                     const motivationalMessages = [
