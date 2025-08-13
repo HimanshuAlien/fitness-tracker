@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FitTracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-4">
+                    <div class="auth-card">
+                        <div class="text-center mb-4">
+                            <h2><i class="fas fa-dumbbell text-primary"></i> FitTracker</h2>
+                            <p class="text-muted">Welcome back!</p>
+                        </div>
+
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">Sign In</button>
+                        </form>
+
+                        <div class="text-center mt-3">
+                            <p>Don't have an account? <a href="register.html">Create one</a></p>
+                        </div>
+                        <!-- Add this button to your login form -->
+                        <!-- Add this after your existing login form, before the closing form div -->
+                        <div class="text-center mt-4">
+                            <div class="d-flex align-items-center my-3">
+                                <hr class="flex-grow-1">
+                                <span class="px-3 text-muted">or</span>
+                                <hr class="flex-grow-1">
+                            </div>
+
+                            <a href="/auth/google" class="btn btn-danger w-100 py-3">
+                                <i class="fab fa-google me-2"></i>
+                                <strong>Continue with Google</strong>
+                            </a>
+
+                            <p class="text-muted mt-2 small">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                Secure OAuth 2.0 authentication
+                            </p>
+                        </div>
+
+
+
+                        <!-- Demo Account -->
+                        <div class="mt-4 p-3 bg-light rounded">
+                            <small class="text-muted">Demo Account:</small><br>
+                            <small>Email: demo@fittracker.com</small><br>
+                            <small>Password: demo123</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script> <!-- Load api.js FIRST -->
+    <script src="js/auth.js"></script> <!-- Then auth.js -->
+</body>
+
+</html>
+
+</body>
+<script>
+    // Debug script to check if api object is properly loaded
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('🔍 Checking API object...');
+        console.log('api exists:', typeof api);
+        console.log('api.login exists:', typeof api?.login);
+        console.log('api object:', api);
+
+        if (typeof api === 'undefined') {
+            console.error('❌ API object is undefined - api.js not loaded properly');
+        } else if (typeof api.login !== 'function') {
+            console.error('❌ api.login is not a function - method missing');
+        } else {
+            console.log('✅ API object is properly loaded');
+        }
+    });
+</script>
+
+</html>

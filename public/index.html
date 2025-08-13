@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTracker - Your Personal Fitness Journey</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 118, 117, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 177, 153, 0.3) 0%, transparent 50%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(2deg);
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 2rem;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ffffff, #f8f9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            max-width: 600px;
+            /* Optional: limits button container width */
+        }
+
+        /* Enhanced responsive behavior */
+        @media (max-width: 768px) {
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .btn-hero {
+                width: 100%;
+                justify-content: center;
+                max-width: 280px;
+                /* Consistent mobile width */
+            }
+        }
+
+
+        .btn-hero {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-hero:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary-hero {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            color: white;
+        }
+
+        .btn-primary-hero:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+            color: white;
+        }
+
+        .btn-secondary-hero {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary-hero:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            color: white;
+        }
+
+        .features-preview {
+            margin-top: 5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: rotate 4s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes rotate {
+            100% {
+                transform: rotate(1turn);
+            }
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-title {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-desc {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .floating-emojis {
+            position: absolute;
+            font-size: 2rem;
+            animation: floatEmoji 8s ease-in-out infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes floatEmoji {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            25% {
+                transform: translateY(-30px) rotate(5deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(-5deg);
+            }
+
+            75% {
+                transform: translateY(-25px) rotate(3deg);
+            }
+        }
+
+        .emoji-1 {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .emoji-2 {
+            top: 20%;
+            right: 10%;
+            animation-delay: 1s;
+        }
+
+        .emoji-3 {
+            top: 60%;
+            left: 8%;
+            animation-delay: 2s;
+        }
+
+        .emoji-4 {
+            top: 70%;
+            right: 5%;
+            animation-delay: 3s;
+        }
+
+        .emoji-5 {
+            top: 40%;
+            right: 15%;
+            animation-delay: 4s;
+        }
+
+        .stats-counter {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            display: block;
+            background: linear-gradient(45deg, #ffd89b, #19547b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-hero {
+                width: 100%;
+                justify-content: center;
+                max-width: 300px;
+            }
+
+            .features-preview {
+                grid-template-columns: 1fr;
+                margin-top: 3rem;
+            }
+
+            .stats-counter {
+                gap: 30px;
+            }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating Fitness Emojis -->
+    <div class="floating-emojis emoji-1">💪</div>
+    <div class="floating-emojis emoji-2">🏃‍♂️</div>
+    <div class="floating-emojis emoji-3">🥗</div>
+    <div class="floating-emojis emoji-4">⚡</div>
+    <div class="floating-emojis emoji-5">🎯</div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-xl-8">
+                    <div class="hero-content text-center">
+                        <!-- Brand Logo -->
+                        <div class="brand-logo">
+                            <div class="logo-icon">🏋️‍♂️</div>
+                            <h2 class="text-white fw-bold mb-0">FitTracker</h2>
+                        </div>
+
+                        <!-- Hero Title -->
+                        <h1 class="hero-title">
+                            Transform Your
+                            <br>Fitness Journey
+                            <span
+                                style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4); background-clip: text; -webkit-text-fill-color: transparent;">Today</span>
+                        </h1>
+
+                        <!-- Hero Subtitle -->
+                        <p class="hero-subtitle">
+                            Track meals 🍽️, monitor workouts 💪, analyze progress 📊, and achieve your fitness goals
+                            <br>with our intelligent health companion featuring BMI calculator & weather-based
+                            suggestions
+                        </p>
+
+                        <!-- CTA Buttons -->
+                        <div class="cta-buttons">
+                            <a href="register.html" class="btn btn-hero btn-primary-hero">
+                                <i class="fas fa-rocket"></i>
+                                Start Your Journey
+                            </a>
+                            <a href="login.html" class="btn btn-hero btn-secondary-hero">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Login to Dashboard
+                            </a>
+                        </div>
+
+                        <!-- Stats Counter -->
+                        <div class="stats-counter">
+                            <div class="stat-item">
+                                <span class="stat-number" data-count="X">0</span>
+                                <span class="stat-label">Active Users</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" data-count="0">0</span>
+                                <span class="stat-label">Workouts Tracked</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" data-count="0">0</span>
+                                <span class="stat-label">Meals Logged</span>
+                            </div>
+                        </div>
+
+                        <!-- Features Preview -->
+                        <div class="features-preview">
+                            <div class="feature-card">
+                                <div class="feature-icon">🍽️</div>
+                                <h3 class="feature-title">Meal Tracking</h3>
+                                <p class="feature-desc">Log your daily meals with calorie counting and nutritional
+                                    insights</p>
+                            </div>
+
+                            <div class="feature-card">
+                                <div class="feature-icon">💪</div>
+                                <h3 class="feature-title">Workout Logger</h3>
+                                <p class="feature-desc">Track exercises, monitor progress, and achieve your fitness
+                                    goals</p>
+                            </div>
+
+                            <div class="feature-card">
+                                <div class="feature-icon">📊</div>
+                                <h3 class="feature-title">Progress Analytics</h3>
+                                <p class="feature-desc">Visualize your fitness journey with detailed charts and insights
+                                </p>
+                            </div>
+
+                            <div class="feature-card">
+                                <div class="feature-icon">📏</div>
+                                <h3 class="feature-title">BMI Calculator</h3>
+                                <p class="feature-desc">Monitor your body mass index with personalized health advice</p>
+                            </div>
+
+                            <div class="feature-card">
+                                <div class="feature-icon">🌤️</div>
+                                <h3 class="feature-title">Weather Integration</h3>
+                                <p class="feature-desc">Get smart workout suggestions based on your local weather</p>
+                            </div>
+
+                            <div class="feature-card">
+                                <div class="feature-icon">👥</div>
+                                <h3 class="feature-title">Social Fitness</h3>
+                                <p class="feature-desc">Connect with friends, share achievements, and stay motivated</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down fa-2x"></i>
+        </div>
+    </section>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Animated Counter
+        function animateCounter(element) {
+            const target = parseInt(element.getAttribute('data-count'));
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current);
+            }, 16);
+        }
+
+        // Start counters when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add entrance animations
+            const heroContent = document.querySelector('.hero-content');
+            heroContent.style.opacity = '0';
+            heroContent.style.transform = 'translateY(50px)';
+
+            setTimeout(() => {
+                heroContent.style.transition = 'all 1s ease-out';
+                heroContent.style.opacity = '1';
+                heroContent.style.transform = 'translateY(0)';
+            }, 300);
+
+            // Start counter animations after delay
+            setTimeout(() => {
+                document.querySelectorAll('.stat-number').forEach(animateCounter);
+            }, 1500);
+
+            // Add stagger animation to feature cards
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+
+                setTimeout(() => {
+                    card.style.transition = 'all 0.8s ease-out';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 2000 + (index * 100));
+            });
+        });
+
+        // Add smooth hover effects
+        document.querySelectorAll('.btn-hero').forEach(button => {
+            button.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-3px) scale(1.05)';
+            });
+
+            button.addEventListener('mouseleave', function () {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+
+</html>
