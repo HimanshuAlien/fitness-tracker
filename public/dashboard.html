@@ -2764,6 +2764,100 @@ window.loadAllDashboardData = loadAllDashboardData;
 
 <!-- ... rest of your HTML content ... -->
 
+<script>
+// Add this switchSection function to fix navigation
+function switchSection(sectionName) {
+    console.log('🔄 Switching to section:', sectionName);
+    
+    try {
+        // Hide all sections
+        const allSections = document.querySelectorAll('[id$="-section"], .content-section, .section');
+        allSections.forEach(section => {
+            section.style.display = 'none';
+            section.classList.remove('active');
+        });
+        
+        // Show the target section
+        const targetSection = document.getElementById(sectionName + '-section') || 
+                            document.getElementById(sectionName) ||
+                            document.querySelector(`[data-section="${sectionName}"]`);
+        
+        if (targetSection) {
+            targetSection.style.display = 'block';
+            targetSection.classList.add('active');
+            console.log('✅ Section switched to:', sectionName);
+        } else {
+            console.error('❌ Section not found:', sectionName);
+            // Default to dashboard if section not found
+            const dashboardSection = document.getElementById('dashboard-section') || 
+                                   document.getElementById('dashboard');
+            if (dashboardSection) {
+                dashboardSection.style.display = 'block';
+                dashboardSection.classList.add('active');
+            }
+        }
+        
+        // Update active navigation state
+        updateActiveNav(sectionName);
+        
+        // Load section-specific data
+        loadSectionData(sectionName);
+        
+    } catch (error) {
+        console.error('❌ Error in switchSection:', error);
+    }
+}
+
+function updateActiveNav(activeSection) {
+    // Remove active class from all nav items
+    const navLinks = document.querySelectorAll('.nav-link, .navbar-nav a, [onclick*="switchSection"]');
+    navLinks.forEach(nav => nav.classList.remove('active'));
+    
+    // Add active class to current section nav
+    const activeNav = document.querySelector(`[onclick*="switchSection('${activeSection}')"]`);
+    if (activeNav) {
+        activeNav.classList.add('active');
+    }
+}
+
+function loadSectionData(sectionName) {
+    // Load data based on section
+    switch(sectionName) {
+        case 'dashboard':
+            if (typeof loadDashboardData === 'function') {
+                loadDashboardData();
+            }
+            break;
+        case 'progress':
+            if (typeof loadProgressData === 'function') {
+                loadProgressData();
+            }
+            break;
+        default:
+            console.log('No specific data loading for:', sectionName);
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Dashboard navigation initialized');
+    
+    // Show dashboard section by default
+    switchSection('dashboard');
+    
+    // Set up authentication
+    const token = localStorage.getItem('fittracker_token');
+    if (!token) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    if (typeof api !== 'undefined') {
+        api.setToken(token);
+        console.log('✅ API token set');
+    }
+});
+</script>
 
 </body>
 
