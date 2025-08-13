@@ -14,15 +14,20 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // Session configuration with fallback
+// Session configuration - PRODUCTION READY
 app.use(session({
     secret: process.env.SESSION_SECRET || 'emergency-fallback-secret-key-12345',
     resave: false,
     saveUninitialized: false,
+    name: 'fittracker.sid', // Custom session name
     cookie: { 
-        secure: false, // Important: false for HTTP, true only for HTTPS
-        maxAge: 24 * 60 * 60 * 1000 
+        secure: process.env.NODE_ENV === 'production', // Auto-detect HTTPS
+        httpOnly: true, // Security improvement
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        sameSite: 'lax' // CSRF protection
     }
 }));
+
 
 app.use(passport.initialize());
 app.use(passport.session());
