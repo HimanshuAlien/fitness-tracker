@@ -163,6 +163,18 @@ class ApiManager {
         });
     }
 }
+// Add to your ApiManager class if missing
+async getAllMeals() {
+    return this.request('/meals');
+}
+
+async getAllWorkouts() {
+    return this.request('/workouts');
+}
+
+async getWeeklyStats() {
+    return this.request('/auth/stats/weekly');
+}
 
 // Initialize API manager globally - THIS LINE IS CRUCIAL
 const api = new ApiManager();
