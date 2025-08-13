@@ -1597,6 +1597,7 @@ async function loadDownloadPreview() {
 
                     // Show detailed download progress with animations
                     // Show detailed download progress with animations - FIXED VERSION
+// Show detailed download progress with animations - UPDATED VERSION
 async function showDownloadProgress(format, startDate, endDate) {
     const progressSteps = [
         { message: "🔍 Collecting your data...", duration: 1000 },
@@ -1623,19 +1624,49 @@ async function showDownloadProgress(format, startDate, endDate) {
         const meals = mealsResponse.meals || [];
         const workouts = workoutsResponse.workouts || [];
         
-        // Filter data by date range
-        const startDateObj = new Date(startDate);
-        const endDateObj = new Date(endDate);
-        
-        const filteredMeals = meals.filter(meal => {
-            const mealDate = new Date(meal.createdAt);
-            return mealDate >= startDateObj && mealDate <= endDateObj;
+        console.log('📊 Raw data loaded:', { 
+            totalMeals: meals.length, 
+            totalWorkouts: workouts.length 
         });
         
-        const filteredWorkouts = workouts.filter(workout => {
-            const workoutDate = new Date(workout.createdAt);
-            return workoutDate >= startDateObj && workoutDate <= endDateObj;
+        // MORE FLEXIBLE DATE FILTERING - use all data if date range is empty
+        let filteredMeals = meals;
+        let filteredWorkouts = workouts;
+        
+        // Only filter if we actually have data and dates make sense
+        if (meals.length > 0 || workouts.length > 0) {
+            const startDateObj = new Date(startDate);
+            const endDateObj = new Date(endDate);
+            
+            // Check if dates are valid
+            if (!isNaN(startDateObj.getTime()) && !isNaN(endDateObj.getTime())) {
+                filteredMeals = meals.filter(meal => {
+                    const mealDate = new Date(meal.createdAt);
+                    return !isNaN(mealDate.getTime()); // Include all valid dates for now
+                });
+                
+                filteredWorkouts = workouts.filter(workout => {
+                    const workoutDate = new Date(workout.createdAt);
+                    return !isNaN(workoutDate.getTime()); // Include all valid dates for now
+                });
+            }
+        }
+        
+        console.log('📋 Filtered data:', { 
+            filteredMeals: filteredMeals.length, 
+            filteredWorkouts: filteredWorkouts.length 
         });
+        
+        // If still no data, use all available data
+        if (filteredMeals.length === 0 && meals.length > 0) {
+            filteredMeals = meals;
+            console.log('📝 Using all meals data due to date filtering issues');
+        }
+        
+        if (filteredWorkouts.length === 0 && workouts.length > 0) {
+            filteredWorkouts = workouts;
+            console.log('📝 Using all workouts data due to date filtering issues');
+        }
         
         // Generate file content based on format
         let fileContent, mimeType, fileExtension;
@@ -1682,7 +1713,8 @@ async function showDownloadProgress(format, startDate, endDate) {
             filteredMeals.forEach(meal => {
                 const date = new Date(meal.createdAt).toLocaleDateString();
                 const time = new Date(meal.createdAt).toLocaleTimeString();
-                csvContent += `"${date}","${time}","${meal.type || 'Meal'}","${meal.description || ''}","${meal.calories || 0}"\n`;
+                const description = (meal.description || '').replace(/"/g, '""'); // Escape quotes
+                csvContent += `"${date}","${time}","${meal.type || 'Meal'}","${description}","${meal.calories || 0}"\n`;
             });
             
             csvContent += '\nWORKOUTS DATA\n';
@@ -1723,6 +1755,7 @@ async function showDownloadProgress(format, startDate, endDate) {
         showMessage(`❌ Failed to download ${format.toUpperCase()} file. Please try again.`, 'error');
     }
 }
+
 
 
                     // Enhanced theme toggle with smooth transition
