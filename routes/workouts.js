@@ -5,6 +5,7 @@ const auth = require('../middleware/auth');
 const router = express.Router();
 
 // Get today's workouts
+// Get today's workouts - ADD THIS ROUTE
 router.get('/today', auth, async (req, res) => {
     try {
         const today = new Date().toISOString().split('T')[0];
@@ -12,14 +13,15 @@ router.get('/today', auth, async (req, res) => {
             user: req.userId,
             dateString: today
         }).sort({ createdAt: -1 });
-
+        
         console.log(`📊 Found ${workouts.length} workouts for user ${req.userId} on ${today}`);
         res.json({ workouts });
     } catch (error) {
-        console.error('Get workouts error:', error);
+        console.error('Get today workouts error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 // Add this route for getting ALL workouts (not just today)
 // Get ALL workouts (FIXED with proper auth and path)
 router.get('/all', auth, async (req, res) => {
