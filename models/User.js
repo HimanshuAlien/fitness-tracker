@@ -137,4 +137,3 @@ userSchema.methods.getPublicProfile = function () {
 };
 
 module.exports = mongoose.model('User', userSchema);
-
