@@ -411,8 +411,27 @@
                                 <span>👥 Friends</span>
                             </a>
                         </li>
-                    </ul>
 
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="calorie-lookup.html" target="_blank">
+                                <i class="fas fa-robot me-3"></i>
+                                <span>🤖 AI ChatBot</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="exercise-finder.html" target="_blank">
+                                <i class="fas fa-dumbbell me-3"></i>
+                                <span>🏋️ Exercise Finder AI</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="fitbit-dashboard.html">
+                                <i class="fas fa-heartbeat me-3"></i>
+                                <span>💓 Fitbit Dashboard</span>
+                            </a>
+                        </li>
+
+                    </ul>
                     <!-- Quick Stats in Sidebar -->
                     <div class="mt-4 px-3">
                         <div class="card border-0"
@@ -716,98 +735,6 @@
                     <div class="container-fluid">
                         <h2><i class="fas fa-chart-line me-2 text-primary"></i>Progress Analytics</h2>
 
-                        <!-- Weekly Stats Cards -->
-                        <div class="row mb-4">
-                            <div class="col-md-3">
-                                <div class="card border-0 shadow-sm">
-                                    <div class="card-body text-center">
-                                        <div class="text-primary mb-2">
-                                            <i class="fas fa-calendar-check fa-2x"></i>
-                                        </div>
-                                        <h3 class="fw-bold mb-1" id="active-days">0</h3>
-                                        <p class="text-muted mb-0">Active Days</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card border-0 shadow-sm">
-                                    <div class="card-body text-center">
-                                        <div class="text-success mb-2">
-                                            <i class="fas fa-fire fa-2x"></i>
-                                        </div>
-                                        <h3 class="fw-bold mb-1" id="weekly-calories">0</h3>
-                                        <p class="text-muted mb-0">Weekly Calories</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card border-0 shadow-sm">
-                                    <div class="card-body text-center">
-                                        <div class="text-warning mb-2">
-                                            <i class="fas fa-utensils fa-2x"></i>
-                                        </div>
-                                        <h3 class="fw-bold mb-1" id="weekly-meals">0</h3>
-                                        <p class="text-muted mb-0">Weekly Meals</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card border-0 shadow-sm">
-                                    <div class="card-body text-center">
-                                        <div class="text-info mb-2">
-                                            <i class="fas fa-dumbbell fa-2x"></i>
-                                        </div>
-                                        <h3 class="fw-bold mb-1" id="weekly-workouts">0</h3>
-                                        <p class="text-muted mb-0">Weekly Workouts</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Goal Status Section -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <div class="card border-0 shadow-sm">
-                                    <div class="card-header bg-white border-0">
-                                        <h5 class="mb-0"><i class="fas fa-target me-2 text-primary"></i>Weekly Goals
-                                            Status</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-4 mb-3">
-                                                <label class="form-label fw-bold">Calories Goal</label>
-                                                <div class="progress mb-2" style="height: 10px;">
-                                                    <div class="progress-bar bg-success" id="calories-progress"
-                                                        role="progressbar" style="width: 0%"></div>
-                                                </div>
-                                                <small class="text-muted" id="calories-status">0/500 calories</small>
-                                            </div>
-                                            <div class="col-md-4 mb-3">
-                                                <label class="form-label fw-bold">Meals Goal</label>
-                                                <div class="progress mb-2" style="height: 10px;">
-                                                    <div class="progress-bar bg-warning" id="meals-progress"
-                                                        role="progressbar" style="width: 0%"></div>
-                                                </div>
-                                                <small class="text-muted" id="meals-status">0/3 meals</small>
-                                            </div>
-                                            <div class="col-md-4 mb-3">
-                                                <label class="form-label fw-bold">Workouts Goal</label>
-                                                <div class="progress mb-2" style="height: 10px;">
-                                                    <div class="progress-bar bg-info" id="workouts-progress"
-                                                        role="progressbar" style="width: 0%"></div>
-                                                </div>
-                                                <small class="text-muted" id="workouts-status">0/1 workouts</small>
-                                            </div>
-                                        </div>
-                                        <div class="text-center mt-3">
-                                            <span class="badge bg-primary fs-6 px-3 py-2" id="overall-progress">
-                                                <i class="fas fa-trophy me-1"></i>Overall: 0%
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- Weekly Progress Chart -->
                         <div class="row">
@@ -943,6 +870,7 @@
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
                 <script src="js/api.js"></script>
                 <script src="js/auth.js"></script>
+                <script src="/js/ai-widget.js"></script>
 
                 <!-- Enhanced Navigation Script (keep the working navigation + add data integration) -->
                 <script>
@@ -1050,6 +978,7 @@
                             exerciseSelect.addEventListener('change', updateWorkoutInfo);
                         }
                     }
+
                     // Add this function to your JavaScript section in dashboard.html
                     function updateCaloriesProgress(current, goal = 500) {
                         const percentage = Math.min(100, Math.round((current / goal) * 100));
@@ -1301,6 +1230,7 @@
         `).join('')}
     `;
                     }
+
 
                     // Update dashboard statistics
                     function updateDashboardStats() {
