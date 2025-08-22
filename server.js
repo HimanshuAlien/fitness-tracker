@@ -296,28 +296,54 @@ async function sendDailyEmailsToAllUsers() {
 
 // ========== FITBIT API ROUTES ==========
 
-// Route 1: Start Fitbit OAuth
+// Route 1: Start Fitbit OAuth process
 app.get('/auth/fitbit', (req, res) => {
     try {
-        const scope = 'activity heartrate sleep weight nutrition profile';
-        const state = Math.random().toString(36).substring(2, 15);
-        req.session.oauthState = state;
-
-        const authUrl = `https://www.fitbit.com/oauth2/authorize?` +
-            `client_id=${process.env.FITBIT_CLIENT_ID}&` +
-            `redirect_uri=${encodeURIComponent(process.env.FITBIT_REDIRECT_URI)}&` +
-            `scope=${encodeURIComponent(scope)}&` +
-            `response_type=code&` +
-            `state=${state}&` +
-            `prompt=consent`;
-
         console.log('🔗 Starting Fitbit OAuth process...');
+        
+        // Generate a unique state parameter
+        const state = require('crypto').randomBytes(32).toString('hex');
+        req.session.oauthState = state;
+        
+        // Define scope
+        const scope = 'activity heartrate sleep weight nutrition profile';
+        
+        // Build authorization URL with proper parameter formatting
+        const authParams = new URLSearchParams({
+            'client_id': process.env.FITBIT_CLIENT_ID,
+            'redirect_uri': process.env.FITBIT_REDIRECT_URI,
+            'scope': scope,
+            'response_type': 'code',  // This MUST be present
+            'state': state,
+            'prompt': 'consent'
+        });
+        
+        const authUrl = `https://www.fitbit.com/oauth2/authorize?${authParams.toString()}`;
+        
+        console.log('🚀 Authorization URL:', authUrl);
+        console.log('🔐 Generated state:', state);
+        
+        // Verify environment variables are present
+        console.log('✅ Environment check:');
+        console.log('  CLIENT_ID:', process.env.FITBIT_CLIENT_ID ? 'Present' : 'Missing');
+        console.log('  REDIRECT_URI:', process.env.FITBIT_REDIRECT_URI ? 'Present' : 'Missing');
+        
         res.redirect(authUrl);
+        
     } catch (error) {
         console.error('❌ Error starting OAuth:', error);
-        res.status(500).send('Error starting Fitbit connection');
+        res.status(500).send(`
+            <div style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+                <h1 style="color: #ff4444;">❌ OAuth Initialization Failed</h1>
+                <p style="font-size: 1.2rem; margin: 20px 0;">${error.message}</p>
+                <a href="/fitbit-dashboard.html" style="background: #667eea; color: white; padding: 15px 30px; text-decoration: none; border-radius: 10px;">
+                    🔙 Back to Dashboard
+                </a>
+            </div>
+        `);
     }
 });
+
 
 // Route 2: Handle Fitbit OAuth callback
 app.get('/auth/fitbit/callback', async (req, res) => {
