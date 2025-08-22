@@ -16,13 +16,13 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // Session configuration - PRODUCTION READY
-// Properly configure session middleware
+// Enhanced session configuration for production
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'fitbit-oauth-secret-key-change-in-production',
+    secret: process.env.SESSION_SECRET || 'fitbit-oauth-super-secret-key-change-in-production-12345',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+        secure: false, // Set to false for now - Render handles HTTPS
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
         sameSite: 'lax' // Important for OAuth redirects
