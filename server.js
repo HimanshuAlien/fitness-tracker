@@ -16,17 +16,18 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // Session configuration - PRODUCTION READY
+// Properly configure session middleware
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'emergency-fallback-secret-key-12345',
+    secret: process.env.SESSION_SECRET || 'fitbit-oauth-secret-key-change-in-production',
     resave: false,
     saveUninitialized: false,
-    name: 'fittracker.sid',
     cookie: {
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'production', // HTTPS only in production
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
-        sameSite: 'lax'
-    }
+        sameSite: 'lax' // Important for OAuth redirects
+    },
+    name: 'fitbit.sid' // Custom session name
 }));
 
 app.use(passport.initialize());
@@ -301,78 +302,113 @@ app.get('/auth/fitbit', (req, res) => {
     try {
         console.log('🔗 Starting Fitbit OAuth process...');
         
-        // Generate a unique state parameter
+// Route 1: Start Fitbit OAuth (FIXED)
+app.get('/auth/fitbit', (req, res) => {
+    try {
+        console.log('🔗 Starting Fitbit OAuth process...');
+        
+        // Clear any existing OAuth state first
+        if (req.session.oauthState) {
+            console.log('🧹 Clearing existing OAuth state');
+            delete req.session.oauthState;
+        }
+        
+        // Generate fresh state
         const state = require('crypto').randomBytes(32).toString('hex');
+        
+        // Save state in session with explicit save
         req.session.oauthState = state;
-        
-        // Define scope
-        const scope = 'activity heartrate sleep weight nutrition profile';
-        
-        // Build authorization URL with proper parameter formatting
-        const authParams = new URLSearchParams({
-            'client_id': process.env.FITBIT_CLIENT_ID,
-            'redirect_uri': process.env.FITBIT_REDIRECT_URI,
-            'scope': scope,
-            'response_type': 'code',  // This MUST be present
-            'state': state,
-            'prompt': 'consent'
+        req.session.save((err) => {
+            if (err) {
+                console.error('❌ Session save error:', err);
+                return res.status(500).send('Session error');
+            }
+            
+            console.log('💾 State saved to session:', state);
+            
+            const scope = 'activity heartrate sleep weight nutrition profile';
+            const authParams = new URLSearchParams({
+                'client_id': process.env.FITBIT_CLIENT_ID,
+                'redirect_uri': process.env.FITBIT_REDIRECT_URI,
+                'scope': scope,
+                'response_type': 'code',
+                'state': state,
+                'prompt': 'consent'
+            });
+            
+            const authUrl = `https://www.fitbit.com/oauth2/authorize?${authParams.toString()}`;
+            
+            console.log('🚀 Authorization URL:', authUrl);
+            console.log('🔐 Generated state:', state);
+            console.log('✅ Environment check:');
+            console.log('  CLIENT_ID:', process.env.FITBIT_CLIENT_ID ? 'Present' : 'Missing');
+            console.log('  REDIRECT_URI:', process.env.FITBIT_REDIRECT_URI ? 'Present' : 'Missing');
+            
+            res.redirect(authUrl);
         });
-        
-        const authUrl = `https://www.fitbit.com/oauth2/authorize?${authParams.toString()}`;
-        
-        console.log('🚀 Authorization URL:', authUrl);
-        console.log('🔐 Generated state:', state);
-        
-        // Verify environment variables are present
-        console.log('✅ Environment check:');
-        console.log('  CLIENT_ID:', process.env.FITBIT_CLIENT_ID ? 'Present' : 'Missing');
-        console.log('  REDIRECT_URI:', process.env.FITBIT_REDIRECT_URI ? 'Present' : 'Missing');
-        
-        res.redirect(authUrl);
         
     } catch (error) {
         console.error('❌ Error starting OAuth:', error);
-        res.status(500).send(`
-            <div style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-                <h1 style="color: #ff4444;">❌ OAuth Initialization Failed</h1>
-                <p style="font-size: 1.2rem; margin: 20px 0;">${error.message}</p>
-                <a href="/fitbit-dashboard.html" style="background: #667eea; color: white; padding: 15px 30px; text-decoration: none; border-radius: 10px;">
-                    🔙 Back to Dashboard
-                </a>
-            </div>
-        `);
+        res.status(500).send('Error starting Fitbit connection');
     }
 });
 
-
-// Route 2: Handle Fitbit OAuth callback
+// Route 2: Handle Fitbit OAuth callback (FIXED)
 app.get('/auth/fitbit/callback', async (req, res) => {
-    const { code, state, error } = req.query;
-
     try {
+        const { code, state, error } = req.query;
+        
+        console.log('📥 Callback received:');
+        console.log('  Code:', code ? 'Present' : 'Missing');
+        console.log('  State from URL:', state);
+        console.log('  State from session:', req.session.oauthState);
+        console.log('  Error:', error || 'None');
+        
+        // Check for OAuth error first
         if (error) {
-            console.error('❌ OAuth error:', error);
-            return res.status(400).send(`OAuth Error: ${error}`);
+            console.error('❌ OAuth error from Fitbit:', error);
+            delete req.session.oauthState;
+            return res.redirect('/fitbit-dashboard.html?error=' + encodeURIComponent(error));
         }
-
+        
+        // Verify state parameter
+        if (!state) {
+            console.error('❌ Missing state parameter in callback');
+            delete req.session.oauthState;
+            return res.redirect('/fitbit-dashboard.html?error=missing_state');
+        }
+        
+        if (!req.session.oauthState) {
+            console.error('❌ No state found in session - session may have expired');
+            return res.redirect('/fitbit-dashboard.html?error=session_expired');
+        }
+        
         if (state !== req.session.oauthState) {
-            console.error('❌ Invalid state parameter');
-            return res.status(400).send('Invalid state parameter');
+            console.error('❌ State parameter mismatch:');
+            console.error('  Expected:', req.session.oauthState);
+            console.error('  Received:', state);
+            delete req.session.oauthState;
+            return res.redirect('/fitbit-dashboard.html?error=invalid_state');
         }
-
+        
         if (!code) {
-            return res.status(400).send('❌ Authorization failed - no code received');
+            console.error('❌ No authorization code received');
+            delete req.session.oauthState;
+            return res.redirect('/fitbit-dashboard.html?error=no_code');
         }
-
-        console.log('🔄 Exchanging authorization code for access token...');
-
+        
+        // Clear state immediately after verification
+        delete req.session.oauthState;
+        console.log('✅ State verified successfully, exchanging code for token...');
+        
+        // Exchange code for access token
         const tokenRequestBody = new URLSearchParams({
             'grant_type': 'authorization_code',
             'code': code,
             'redirect_uri': process.env.FITBIT_REDIRECT_URI,
             'client_id': process.env.FITBIT_CLIENT_ID
         });
-
+        
         const tokenResponse = await fetch('https://api.fitbit.com/oauth2/token', {
             method: 'POST',
             headers: {
@@ -381,47 +417,43 @@ app.get('/auth/fitbit/callback', async (req, res) => {
             },
             body: tokenRequestBody
         });
-
+        
         const tokenData = await tokenResponse.json();
-
+        
         if (!tokenResponse.ok) {
             console.error('❌ Token exchange failed:', tokenData);
-            throw new Error(`Token exchange failed: ${tokenData.error_description || tokenData.error}`);
+            return res.redirect('/fitbit-dashboard.html?error=' + encodeURIComponent(tokenData.error || 'token_exchange_failed'));
         }
-
+        
+        console.log('🎉 Token exchange successful!');
+        
         // Store tokens in session
         req.session.fitbitAccessToken = tokenData.access_token;
         req.session.fitbitRefreshToken = tokenData.refresh_token;
         req.session.fitbitUserId = tokenData.user_id;
-
-        // Get user's email and store
-        const userEmail = await getFitbitUserEmail(tokenData.access_token);
-
-        if (userEmail) {
-            storeConnectedUser(
-                tokenData.user_id,
-                tokenData.access_token,
-                tokenData.refresh_token,
-                userEmail
-            );
+        
+        // Get user email and store
+        try {
+            const userEmail = await getFitbitUserEmail(tokenData.access_token);
+            if (userEmail) {
+                storeConnectedUser(
+                    tokenData.user_id,
+                    tokenData.access_token,
+                    tokenData.refresh_token,
+                    userEmail
+                );
+            }
+        } catch (emailError) {
+            console.warn('⚠️ Could not fetch user email:', emailError.message);
         }
-
-        delete req.session.oauthState;
+        
         console.log('✅ Fitbit connection completed successfully!');
-
         res.redirect('/fitbit-dashboard.html?connected=true');
-
+        
     } catch (error) {
         console.error('❌ Fitbit OAuth callback error:', error);
-        res.status(500).send(`
-            <div style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-                <h1 style="color: #ff4444;">❌ Fitbit Connection Failed</h1>
-                <p style="font-size: 1.2rem; margin: 20px 0;">${error.message}</p>
-                <a href="/fitbit-dashboard.html" style="background: #667eea; color: white; padding: 15px 30px; text-decoration: none; border-radius: 10px;">
-                    🔙 Back to Dashboard
-                </a>
-            </div>
-        `);
+        delete req.session.oauthState;
+        res.redirect('/fitbit-dashboard.html?error=' + encodeURIComponent(error.message));
     }
 });
 
