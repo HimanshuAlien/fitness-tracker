@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 
@@ -788,4 +789,796 @@
 
 </body>
 
+=======
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS Exercise Database</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* JARVIS Loading Screen - KEEPING THE SAME */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, #001122 0%, #000000 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            animation: fadeOut 1s ease-in-out 3s forwards;
+        }
+
+        .jarvis-logo {
+            width: 120px;
+            height: 120px;
+            border: 3px solid #00d4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        .jarvis-logo::before {
+            content: '';
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50%;
+            animation: rotate 3s linear infinite;
+        }
+
+        .jarvis-logo::after {
+            content: '';
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 50%;
+            animation: rotate 4s linear infinite reverse;
+        }
+
+        .jarvis-icon {
+            font-size: 48px;
+            color: #00d4ff;
+            z-index: 1;
+        }
+
+        .loading-text {
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .loading-subtext {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .progress-bar {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #0099cc);
+            width: 0%;
+            animation: fillProgress 3s ease-in-out forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 30px #00d4ff66;
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 50px #00d4ffaa;
+            }
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px #00d4ff;
+            }
+
+            to {
+                text-shadow: 0 0 30px #00d4ff, 0 0 40px #0099cc;
+            }
+        }
+
+        @keyframes fillProgress {
+            0% {
+                width: 0%;
+            }
+
+            33% {
+                width: 33%;
+            }
+
+            66% {
+                width: 66%;
+            }
+
+            100% {
+                width: 100%;
+            }
+        }
+
+        /* NEW MODERN THEME - Purple/Orange Gradient */
+        .main-app {
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out 3.5s forwards;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 40px 20px 30px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        }
+
+        .hero-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #ffffff;
+            margin-bottom: 15px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+            animation: slideDown 1s ease-out 4s both;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            font-weight: 300;
+            animation: slideUp 1s ease-out 4.2s both;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .search-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: slideUp 1s ease-out 4.4s both;
+        }
+
+        .search-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .search-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.4rem;
+            color: #ffffff;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        /* MODERN COMPACT SEARCH */
+        .search-grid {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            align-items: center;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 25px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-input:focus {
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+            background: #ffffff;
+        }
+
+        .search-input::placeholder {
+            color: #888;
+            font-weight: 400;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(238, 90, 36, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(238, 90, 36, 0.4);
+        }
+
+        .search-btn:active {
+            transform: translateY(0);
+        }
+
+        /* COMPACT FILTER CHIPS */
+        .quick-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-chip {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .filter-chip:hover,
+        .filter-chip.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .stats-display {
+            text-align: center;
+            padding: 15px;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        /* MODERN EXERCISE CARDS */
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .exercise-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            transform: translateY(30px);
+            opacity: 0;
+            color: #333;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .exercise-card.animate {
+            animation: cardSlideIn 0.5s ease forwards;
+        }
+
+        @keyframes cardSlideIn {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .exercise-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .exercise-gif-container {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            background: #f8f9fa;
+        }
+
+        .exercise-gif {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .exercise-card:hover .exercise-gif {
+            transform: scale(1.05);
+        }
+
+        .gif-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .play-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 107, 107, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #fff;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .exercise-card:hover .play-indicator {
+            opacity: 1;
+        }
+
+        .exercise-content {
+            padding: 20px;
+        }
+
+        .exercise-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+            text-transform: capitalize;
+            line-height: 1.3;
+        }
+
+        .exercise-meta {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .meta-badge {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .exercise-instructions {
+            background: rgba(102, 126, 234, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #555;
+            border-left: 3px solid #667eea;
+        }
+
+        .loading-state {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 150px;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 15px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+
+            .search-grid {
+                flex-direction: column;
+            }
+
+            .search-panel {
+                padding: 20px;
+            }
+
+            .exercise-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-filters {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- JARVIS Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="jarvis-logo">
+            <div class="jarvis-icon">🤖</div>
+        </div>
+        <div class="loading-text">JARVIS EXERCISE DATABASE</div>
+        <div class="loading-subtext">Initializing AI Exercise Library...</div>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div class="main-app" id="mainApp">
+        <div class="hero-section">
+            <h1 class="hero-title">JARVIS FITNESS</h1>
+            <p class="hero-subtitle">AI-Powered Exercise Database • 1300+ Exercises with Visual Demonstrations</p>
+        </div>
+
+        <div class="container">
+            <div class="search-panel">
+                <div class="search-header">
+                    <h2 class="search-title">🎯 Find Your Perfect Exercise</h2>
+                </div>
+
+                <div class="search-grid">
+                    <input type="text" id="searchInput" class="search-input"
+                        placeholder="Search exercises (e.g., push up, squat)">
+                    <button class="search-btn" id="searchBtn" onclick="searchExercises()">
+                        Analyze
+                    </button>
+                </div>
+
+                <div class="quick-filters">
+                    <div class="filter-chip" onclick="quickSearch('chest')">💪 Chest</div>
+                    <div class="filter-chip" onclick="quickSearch('back')">🔙 Back</div>
+                    <div class="filter-chip" onclick="quickSearch('upper legs')">🦵 Legs</div>
+                    <div class="filter-chip" onclick="quickSearch('upper arms')">💪 Arms</div>
+                    <div class="filter-chip" onclick="quickSearch('waist')">🔥 Core</div>
+                    <div class="filter-chip" onclick="quickSearch('body weight')">🏃 Bodyweight</div>
+                </div>
+            </div>
+
+            <div id="statsDisplay" class="stats-display"></div>
+            <div id="exerciseResults" class="exercise-grid"></div>
+        </div>
+    </div>
+
+    <!-- Replace your current script section with this improved version -->
+    <script>
+        // Using the reliable Free Exercise DB from GitHub
+        const GITHUB_API_BASE = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/';
+        const EXERCISE_LIST_URL = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/dist/exercises.json';
+
+        let allExercises = [];
+        let isLoading = false;
+
+        // Load the complete exercise database
+        async function loadExerciseDatabase() {
+            try {
+                const response = await fetch(EXERCISE_LIST_URL);
+                allExercises = await response.json();
+                console.log(`✅ Loaded ${allExercises.length} exercises with stable images!`);
+            } catch (error) {
+                console.error('Failed to load exercise database:', error);
+            }
+        }
+
+        // Initialize loading screen timeout
+        setTimeout(() => {
+            document.getElementById('loadingScreen').style.display = 'none';
+            loadExerciseDatabase(); // Load exercises after JARVIS screen
+        }, 3000);
+
+        async function searchExercises() {
+            const query = document.getElementById('searchInput').value.trim();
+
+            if (!query) {
+                showError('Please enter an exercise name to search!');
+                return;
+            }
+
+            setLoading(true);
+
+            try {
+                // Search through the local database
+                const matchingExercises = allExercises.filter(exercise =>
+                    exercise.name.toLowerCase().includes(query.toLowerCase()) ||
+                    exercise.primaryMuscles?.some(muscle => muscle.toLowerCase().includes(query.toLowerCase()))
+                ).slice(0, 8);
+
+                displayExercises(matchingExercises, `Search results for "${query}"`);
+
+            } catch (error) {
+                showError(`Search failed: ${error.message}`);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function quickSearch(term) {
+            // Update active filter
+            document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('searchInput').value = '';
+            setLoading(true);
+
+            try {
+                let exercises = [];
+
+                // Map our terms to muscle groups
+                const muscleMap = {
+                    'chest': ['chest', 'pectorals'],
+                    'back': ['lats', 'middle back', 'lower back'],
+                    'upper legs': ['quadriceps', 'hamstrings', 'glutes'],
+                    'upper arms': ['biceps', 'triceps'],
+                    'waist': ['abdominals', 'obliques'],
+                    'body weight': [] // Special case for bodyweight
+                };
+
+                if (term === 'body weight') {
+                    exercises = allExercises.filter(ex =>
+                        ex.equipment === 'body only' ||
+                        ex.equipment === 'bodyweight'
+                    ).slice(0, 8);
+                } else if (muscleMap[term]) {
+                    exercises = allExercises.filter(ex =>
+                        ex.primaryMuscles?.some(muscle =>
+                            muscleMap[term].some(targetMuscle =>
+                                muscle.toLowerCase().includes(targetMuscle)
+                            )
+                        )
+                    ).slice(0, 8);
+                }
+
+                displayExercises(exercises, `${term.toUpperCase()} exercises`);
+
+            } catch (error) {
+                showError(`Search failed: ${error.message}`);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function displayExercises(exercises, title) {
+            const resultsDiv = document.getElementById('exerciseResults');
+            const statsDiv = document.getElementById('statsDisplay');
+
+            if (exercises.length === 0) {
+                resultsDiv.innerHTML = '<div class="error-state">No exercises found. Try different search terms!</div>';
+                statsDiv.textContent = '';
+                return;
+            }
+
+            statsDiv.innerHTML = `● ${title} - Found ${exercises.length} exercises`;
+
+            let html = '';
+            exercises.forEach((exercise, index) => {
+                // GitHub exercise images are stable and reliable
+                const imageBase = `${GITHUB_API_BASE}${exercise.id}/`;
+
+                html += `
+                <div class="exercise-card" data-index="${index}">
+                    <div class="exercise-gif-container">
+                        <img src="${imageBase}0.jpg" 
+                             alt="${exercise.name}" 
+                             class="exercise-gif"
+                             onerror="this.src='${imageBase}1.jpg'"
+                             loading="lazy">
+                        <div class="play-indicator">📷</div>
+                    </div>
+                    
+                    <div class="exercise-content">
+                        <h3 class="exercise-title">${exercise.name}</h3>
+                        
+                        <div class="exercise-meta">
+                            <span class="meta-badge">💪 ${exercise.primaryMuscles?.join(', ') || 'General'}</span>
+                            <span class="meta-badge">🏋️ ${exercise.equipment || 'Various'}</span>
+                            <span class="meta-badge">📊 ${exercise.level || 'All Levels'}</span>
+                        </div>
+                        
+                        <div class="exercise-instructions">
+                            <strong>Instructions:</strong><br>
+                            ${exercise.instructions ? exercise.instructions.slice(0, 2).join(' ') : 'Follow proper form and technique for this exercise.'}
+                        </div>
+                    </div>
+                </div>
+            `;
+            });
+
+            resultsDiv.innerHTML = html;
+
+            // Animate cards in sequence
+            setTimeout(() => {
+                document.querySelectorAll('.exercise-card').forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.add('animate');
+                    }, index * 100);
+                });
+            }, 100);
+        }
+
+        function setLoading(loading) {
+            isLoading = loading;
+            const searchBtn = document.getElementById('searchBtn');
+            const resultsDiv = document.getElementById('exerciseResults');
+
+            if (loading) {
+                searchBtn.disabled = true;
+                searchBtn.innerHTML = '<div class="spinner"></div>Analyzing...';
+                resultsDiv.innerHTML = '<div class="loading-state"><div class="spinner"></div>JARVIS is finding the best exercises...</div>';
+            } else {
+                searchBtn.disabled = false;
+                searchBtn.innerHTML = 'Analyze';
+            }
+        }
+
+        function showError(message) {
+            const resultsDiv = document.getElementById('exerciseResults');
+            resultsDiv.innerHTML = `<div class="error-state">⚠️ ${message}</div>`;
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !isLoading) {
+                searchExercises();
+            }
+        });
+
+        // Auto-load popular exercises after database loads
+        setTimeout(() => {
+            if (allExercises.length > 0) {
+                quickSearch('chest');
+            }
+        }, 5000); // Give time for database to load
+    </script>
+
+</body>
+
+>>>>>>> bf155d48a0cdf8db206388779e78c272f97f32fa
 </html>
