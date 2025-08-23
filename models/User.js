@@ -4,10 +4,9 @@ const bcrypt = require('bcryptjs');
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: false, // Make it optional to handle existing users
+        required: false,
         trim: true,
         default: function () {
-            // Auto-generate name from email if missing
             if (this.email) {
                 return this.email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '');
             }
@@ -82,7 +81,7 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Auto-populate name before saving if missing
+// ✅ SINGLE PRE-SAVE HOOK (removed duplicate)
 userSchema.pre('save', async function (next) {
     // Handle missing name
     if (!this.name && this.email) {
@@ -90,7 +89,7 @@ userSchema.pre('save', async function (next) {
         console.log(`🔧 Auto-generated name for ${this.email}: ${this.name}`);
     }
 
-    // Hash password if modified
+    // Hash password if modified (ONLY ONCE!)
     if (!this.isModified('password') || !this.password) {
         return next();
     }
@@ -98,12 +97,14 @@ userSchema.pre('save', async function (next) {
     try {
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);
+        console.log('🔒 Password hashed successfully');
         next();
     } catch (error) {
         next(error);
     }
 });
 
+// ✅ SINGLE comparePassword method
 userSchema.methods.comparePassword = async function (candidatePassword) {
     if (!this.password) {
         return false;
@@ -111,69 +112,21 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
     return bcrypt.compare(candidatePassword, this.password);
 };
 
+// ✅ SINGLE calculateBMI method
 userSchema.methods.calculateBMI = function () {
     if (!this.height || !this.weight || this.height <= 0 || this.weight <= 0) {
         return null;
     }
-
     const heightInMeters = this.height / 100;
     const bmi = this.weight / (heightInMeters * heightInMeters);
     return Math.round(bmi * 10) / 10;
 };
 
+// ✅ SINGLE getPublicProfile method
 userSchema.methods.getPublicProfile = function () {
     return {
         id: this._id,
-        name: this.name || 'User', // Fallback if name is still missing
-        email: this.email,
-        avatar: this.avatar,
-        bmi: this.calculateBMI(),
-        preferences: this.preferences,
-        goals: this.goals,
-        createdAt: this.createdAt
-    };
-};
-
-
-// Hash password before saving
-userSchema.pre('save', async function (next) {
-    if (!this.isModified('password') || !this.password) {
-        return next();
-    }
-
-    try {
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
-        next();
-    } catch (error) {
-        next(error);
-    }
-});
-
-// Method to compare passwords
-userSchema.methods.comparePassword = async function (candidatePassword) {
-    if (!this.password) {
-        return false;
-    }
-    return bcrypt.compare(candidatePassword, this.password);
-};
-
-// ADD THIS MISSING METHOD
-userSchema.methods.calculateBMI = function () {
-    if (!this.height || !this.weight || this.height <= 0 || this.weight <= 0) {
-        return null; // Return null if height/weight not available or invalid
-    }
-
-    const heightInMeters = this.height / 100; // Convert cm to meters
-    const bmi = this.weight / (heightInMeters * heightInMeters);
-    return Math.round(bmi * 10) / 10; // Round to 1 decimal place
-};
-
-// Method to get public profile
-userSchema.methods.getPublicProfile = function () {
-    return {
-        id: this._id,
-        name: this.name,
+        name: this.name || 'User',
         email: this.email,
         avatar: this.avatar,
         bmi: this.calculateBMI(),
